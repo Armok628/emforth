@@ -23,55 +23,84 @@ void engine(FTH_REGS)
 		return;
 	}
 
-next: ASMLABEL(next);
+next:
+	ASMLABEL(next);
 	goto **(w.p = *(ip++));
 
-bye_code: ASMLABEL(bye_code); /*: BYE ( bye ) ;*/
+bye_code: /*: BYE ( bye ) ;*/
+	ASMLABEL(bye_code);
 	return;
 
-docol_code: ASMLABEL(docol_code); /*: DOCOL ( docol ) ;*/
+docol_code: /*: DOCOL ( docol ) ;*/
+	ASMLABEL(docol_code);
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)w.p + 1;
 	goto next;
-exit_code: ASMLABEL(exit_code); /*: EXIT ( exit ) ;*/
+exit_code: /*: EXIT ( exit ) ;*/
+	ASMLABEL(exit_code);
 	ip = (void ***)POP(rp);
 	goto next;
-dolit_code: ASMLABEL(dolit_code); /*: DOLIT ( dolit ) ;*/
+dolit_code: /*: DOLIT ( dolit ) ;*/
+	ASMLABEL(dolit_code);
 	PUSH(sp) = tos;
 	tos = *(cell_t *)ip++;
 	goto next;
 
-dup_code: ASMLABEL(dup_code); /*: DUP ( dup ) ;*/
-	PUSH(sp) = tos;
-	goto next;
-drop_code: ASMLABEL(drop_code); /*: DROP ( drop ) ;*/
+branch_code: /*: BRANCH ( branch ) ;*/
+	ASMLABEL(branch_code);
+	ip = (void ***)((char *)ip + *(cell_t *)(ip++));
 	tos = POP(sp);
 	goto next;
-swap_code: ASMLABEL(swap_code); /*: SWAP ( swap ) ;*/
+zbranch_code: /*: 0BRANCH ( zbranch ) ;*/
+	ASMLABEL(zbranch_code);
+	if (tos)
+		goto drop_code;
+	else
+		goto branch_code;
+goto_code: /*: GO-TO ( goto ) ;*/
+	ASMLABEL(goto_code);
+	ip = *(void ****)ip;
+	goto next;
+
+dup_code: /*: DUP ( dup ) ;*/
+	ASMLABEL(dup_code);
+	PUSH(sp) = tos;
+	goto next;
+drop_code: /*: DROP ( drop ) ;*/
+	ASMLABEL(drop_code);
+	tos = POP(sp);
+	goto next;
+swap_code: /*: SWAP ( swap ) ;*/
+	ASMLABEL(swap_code);
 	w.c = sp[-1];
 	sp[-1] = tos;
 	tos = w.c;
 	goto next;
-rot_code: ASMLABEL(rot_code); /*: ROT ( rot ) ;*/
+rot_code: /*: ROT ( rot ) ;*/
+	ASMLABEL(rot_code);
 	w.c = sp[-2];
 	sp[-2] = sp[-1];
 	sp[-1] = tos;
 	tos = w.c;
 	goto next;
 
-over_code: ASMLABEL(over_code); /*: OVER ( over ) ;*/
+over_code: /*: OVER ( over ) ;*/
+	ASMLABEL(over_code);
 	PUSH(sp) = tos;
 	tos = sp[-2];
 	goto next;
-nip_code: ASMLABEL(nip_code); /*: NIP ( nip ) ;*/
+nip_code: /*: NIP ( nip ) ;*/
+	ASMLABEL(nip_code);
 	(void)POP(sp);
 	goto next;
-tuck_code: ASMLABEL(tuck_code); /*: TUCK ( tuck ) ;*/
+tuck_code: /*: TUCK ( tuck ) ;*/
+	ASMLABEL(tuck_code);
 	w.c = sp[-1];
 	sp[-1] = tos;
 	PUSH(sp) = w.c;
 	goto next;
-unrot_code: ASMLABEL(unrot_code); /*: -ROT ( unrot ) ;*/
+unrot_code: /*: -ROT ( unrot ) ;*/
+	ASMLABEL(unrot_code);
 	w.c = sp[-1];
 	sp[-1] = sp[-2];
 	sp[-2] = tos;
