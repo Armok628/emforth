@@ -14,6 +14,31 @@ sub comma ($) {
 	push @{$data{$state}},$cell;
 }
 
+sub markbw {
+	push @stack,scalar(@{$data{$state}});
+}
+sub markfw {
+	markbw();
+	comma('');
+}
+
+
+#TODO: Make the following two subroutines less ugly
+sub fwresolve {
+	my $a=pop @stack;
+	${$data{$state}}[$a]="(void **)(@{[scalar(@{$data{$state}})-$a]}*sizeof(cell_t))";
+}
+sub bwresolve {
+	comma("(void **)(@{[$stack[@stack-1]-scalar(@{$data{$state}})]}*sizeof(cell_t))");
+}
+
+sub swap {
+	my $b=pop @stack;
+	my $a=pop @stack;
+	push @stack, $b;
+	push @stack, $a;
+}
+
 my %imm = (
 	'/*:' => sub {
 		$state=shift @line;
@@ -44,21 +69,20 @@ my %imm = (
 		comma("&$ct{'DOLIT'}_def.cfa");
 		comma("&$ct{shift @line}_def.cfa");
 	},
-	'MARK>' => sub {
-		push @stack,scalar(@{$data{$state}});
-		comma('');
+	'IF' => sub {
+		comma("&$ct{'0BRANCH'}_def.cfa");
+		markfw();
 	},
-	'MARK<' => sub {
-		push @stack,scalar(@{$data{$state}});
+	'ELSE' => sub {
+		comma("&$ct{'0BRANCH'}_def.cfa");
+		markfw();
+		swap();
+		fwresolve();
 	},
-	'>RESOLVE' => sub {
-		my $a=pop @stack;
-		${$data{$state}}[$a]="(void **)(@{[scalar(@{$data{$state}})-$a]}*sizeof(cell_t))";
+	'THEN' => sub {
+		fwresolve();
 	},
-	'<RESOLVE' => sub {
-		comma("(void **)(@{[$stack[@stack-1]-scalar(@{$data{$state}})]}*sizeof(cell_t))");
-	},
-	#TODO Other immediates
+	#TODO More immediates
 );
 
 sub interp ($) {
@@ -103,7 +127,7 @@ static struct primitive $ct{$_}_def = {
 		.namelen = @{[length]},
 	},
 	// .cfa = $cfa{$_},
-	.data = {@{[join ', ',@{$data{$_}}]}},
+	@{[scalar @{$data{$_}}?".data = {@{[join ', ',@{$data{$_}}]}},":""]}
 };
 EOT
 	$last=$ct{$_};
