@@ -48,7 +48,7 @@ dolit_code: /*: DOLIT ( dolit ) ;*/
 
 branch_code: /*: BRANCH ( branch ) ;*/
 	ASMLABEL(branch_code);
-	ip = (void ***)((char *)ip + *(cell_t *)(ip++));
+	ip = (void ***)((char *)ip + *(cell_t *)ip);
 	tos = POP(sp);
 	goto next;
 zbranch_code: /*: 0BRANCH ( zbranch ) ;*/

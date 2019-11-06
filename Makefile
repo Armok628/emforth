@@ -1,4 +1,5 @@
-CFLAGS = -Os -g
+CFLAGS = -Os -g -Wall -Wextra
+
 WORD_LOCS = main.c
 
 a.out: main.c fthdef.h dict.c cfas.c
