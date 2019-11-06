@@ -129,6 +129,8 @@ OP2(neq,!=,-) /*: <> ( neq ) ;*/
 n##_code: ASMLABEL(n##_code); \
 	tos = a(tos b); \
 	goto next;
+OP1(inc,,+1) /*: 1+ ( inc ) ;*/
+OP1(dec,,-1) /*: 1- ( dec ) ;*/
 OP1(neg,-,) /*: NEGATE ( neg ) ;*/
 OP1(not,~,) /*: INVERT ( not ) ;*/
 OP1(lsh1,,<<1) /*: 2* ( lsh1 ) ;*/

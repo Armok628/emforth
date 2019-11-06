@@ -44,6 +44,20 @@ my %imm = (
 		comma("&$ct{'DOLIT'}_def.cfa");
 		comma("&$ct{shift @line}_def.cfa");
 	},
+	'MARK>' => sub {
+		push @stack,scalar(@{$data{$state}});
+		comma('');
+	},
+	'MARK<' => sub {
+		push @stack,scalar(@{$data{$state}});
+	},
+	'>RESOLVE' => sub {
+		my $a=pop @stack;
+		${$data{$state}}[$a]="(void **)(@{[scalar(@{$data{$state}})-$a]}*sizeof(cell_t))";
+	},
+	'<RESOLVE' => sub {
+		comma("(void **)(@{[$stack[@stack-1]-scalar(@{$data{$state}})]}*sizeof(cell_t))");
+	},
 	#TODO Other immediates
 );
 
