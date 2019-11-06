@@ -9,11 +9,13 @@ my %ct=();
 my %cfa=();
 my %data=(); # Hash of string array refs
 
+# Compilation primitive
 sub comma ($) {
 	my ($cell)=@_;
 	push @{$data{$state}},$cell;
 }
 
+# Control flow primitives
 sub markbw {
 	push @stack,scalar(@{$data{$state}});
 }
@@ -21,17 +23,17 @@ sub markfw {
 	markbw();
 	comma('');
 }
-
-
-#TODO: Make the following two subroutines less ugly
 sub fwresolve {
 	my $a=pop @stack;
-	${$data{$state}}[$a]="(void **)(@{[scalar(@{$data{$state}})-$a]}*sizeof(cell_t))";
+	my $o=scalar(@{$data{$state}})-$a;
+	${$data{$state}}[$a]="(void **)($o*sizeof(cell_t))";
 }
 sub bwresolve {
-	comma("(void **)(@{[$stack[@stack-1]-scalar(@{$data{$state}})]}*sizeof(cell_t))");
+	my $o=$stack[@stack-1]-scalar(@{$data{$state}});
+	comma("(void **)($o*sizeof(cell_t))");
 }
 
+# Utilities
 sub swap {
 	my $b=pop @stack;
 	my $a=pop @stack;
@@ -39,6 +41,7 @@ sub swap {
 	push @stack, $a;
 }
 
+# Immediate words
 my %imm = (
 	'/*:' => sub {
 		$state=shift @line;
@@ -85,6 +88,7 @@ my %imm = (
 	#TODO More immediates
 );
 
+# Line interpreter
 sub interp ($) {
 	chomp;
 	@line=split ' ',$_;
@@ -101,10 +105,14 @@ sub interp ($) {
 	}
 }
 
+# Collect input lines
 my @lines=(<>);
+# Collect C tokens from input
 /: (\S+) \( (\S+) \)/ and $ct{$1}=$2 for @lines;
+# Interpret every line of input
 &interp for @lines;
 
+# Output code field address array to file
 my $fh;
 open($fh,'>','cfas.c') or die;
 print $fh "static void *cfas[] = {\n";
@@ -114,6 +122,7 @@ for (sort keys %ct) {
 print $fh "};";
 close $fh;
 
+# Output dictionary links to file
 open($fh,'>','dict.c') or die;
 my $last;
 print $fh "static struct primitive $ct{$_}_def;\n" for keys %ct;
@@ -127,7 +136,7 @@ static struct primitive $ct{$_}_def = {
 		.namelen = @{[length]},
 	},
 	// .cfa = $cfa{$_},
-	@{[scalar @{$data{$_}}?".data = {@{[join ', ',@{$data{$_}}]}},":""]}
+	.data = {@{[join ', ',@{$data{$_}}]}},
 };
 EOT
 	$last=$ct{$_};
