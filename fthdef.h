@@ -25,11 +25,12 @@ struct link {
 };
 
 #define FTH_REGS \
-	void **ip[], \
-	cell_t *sp, \
-	cell_t *rp, \
-	union workreg w, \
-	cell_t tos
+	register void **ip[], \
+	register cell_t *sp, \
+	register cell_t *rp, \
+	cell_t *dp, \
+	register union workreg w, \
+	register cell_t tos
 
 union workreg {
 	void **p;
@@ -43,6 +44,8 @@ struct primitive {
 	void *cfa;
 	void **data[];
 };
+
+const ucell_t msb = ~(~0UL>>1);
 
 #define PUSH(x) *(x++)
 #define POP(x) *(--x)

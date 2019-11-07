@@ -133,7 +133,7 @@ static struct primitive $ct{$_}_def = {
 	.link = {
 		.prev = @{[$last?"&${last}_def.link":"NULL"]},
 		.name = "$_",
-		.namelen = @{[length]},
+		.namelen = @{[length.($imm{$_}?"|msb":"")]},
 	},
 	// .cfa = $cfa{$_},
 	.data = {@{[join ', ',@{$data{$_}}]}},

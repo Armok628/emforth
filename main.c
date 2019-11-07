@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include "fthdef.h"
 
-#ifdef USE_ENGINE_LABELS
+#ifdef USE_ASMLABELS
 #define ASMLABEL(x) __asm__(#x ":")
 #else
 #define ASMLABEL(x)
@@ -107,6 +107,29 @@ unrot_code: /*: -ROT ( unrot ) ;*/
 	tos = w.c;
 	goto next;
 
+here_code: /*: HERE ( here ) ;*/
+	ASMLABEL(here_code);
+	PUSH(sp) = tos;
+	tos = (cell_t)dp;
+	goto next;
+allot_code: /*: ALLOT ( allot ) ;*/
+	ASMLABEL(allot_code);
+	dp = (cell_t *)((char *)dp + tos);
+	tos = POP(sp);
+	goto next;
+comma_code: /*: , ( comma ) ;*/
+	ASMLABEL(comma_code);
+	*dp = tos;
+	dp++;
+	tos = POP(sp);
+	goto next;
+ccomma_code: /*: C, ( ccomma ) ;*/
+	ASMLABEL(ccomma_code);
+	*(char *)dp = (char)tos;
+	dp = (cell_t *)((char *)dp+1);
+	tos = POP(sp);
+	goto next;
+
 #define OP2(n,a,b) \
 n##_code: ASMLABEL(n##_code); \
 	tos = b(POP(sp) a tos); \
@@ -145,14 +168,14 @@ OP1(neqz,-,!=0) /*: 0<> ( neqz ) ;*/
 
 }
 
-void execute(void **xt,cell_t *sp,cell_t *rp)
+void execute(void **xt,cell_t *sp,cell_t *rp,cell_t *dp)
 {
 	static void *bye = &&ret;
 
 	void **ip[2] = {xt, &bye};
 	cell_t tos = POP(sp);
 
-	engine(ip, sp, rp, w0, tos);
+	engine(ip, sp, rp, dp, w0, tos);
 ret:
 	PUSH(sp) = tos;
 	return;
@@ -162,15 +185,16 @@ void interp(void **xt)
 {
 	cell_t stack[64];
 	cell_t rstack[32];
+	cell_t udata[1024];
 
-	execute(xt, stack, rstack);
+	execute(xt, stack, rstack, udata);
 }
 
 int main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
-	engine(NULL, NULL, NULL, w0, 0);
+	engine(NULL, NULL, NULL, NULL, w0, 0);
 	interp(&bye_def.cfa);
 	return 0;
 }
