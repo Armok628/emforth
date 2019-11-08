@@ -99,8 +99,12 @@ sub interp ($) {
 		} elsif ($word=~/^-?\d+$/) {
 			comma("&$ct{'DOLIT'}_def.cfa");
 			comma("(void **)$word");
-		} elsif ($state && $ct{$word}) {
-			comma("&$ct{$word}_def.cfa");
+		} elsif ($state) {
+			if ($ct{$word}) {
+				comma("&$ct{$word}_def.cfa");
+			} else {
+				print "$word?\n";
+			}
 		}
 	}
 }
@@ -125,8 +129,9 @@ close $fh;
 # Output dictionary links to file
 open($fh,'>','dict.c') or die;
 my $last;
-print $fh "static struct primitive $ct{$_}_def;\n" for keys %ct;
-print $fh "\n";
+print $fh "static struct primitive\n\t";
+print $fh join ",\n\t",map {"${_}_def"} values %ct;
+print $fh ";\n\n";
 for (reverse sort keys %ct) {
 	print $fh <<"EOT";
 static struct primitive $ct{$_}_def = {

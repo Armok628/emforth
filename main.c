@@ -107,6 +107,16 @@ unrot_code: /*: -ROT ( unrot ) ;*/
 	tos = w.c;
 	goto next;
 
+store_code: /*: ! ( store ) ;*/
+	ASMLABEL(store_code);
+	*(cell_t *)tos = POP(sp);
+	tos = POP(sp);
+	goto next;
+fetch_code: /*: @ ( fetch ) ;*/
+	ASMLABEL(fetch_code);
+	tos = *(cell_t *)tos;
+	goto next;
+
 here_code: /*: HERE ( here ) ;*/
 	ASMLABEL(here_code);
 	PUSH(sp) = tos;
