@@ -29,15 +29,8 @@ struct link {
 	register cell_t *sp, \
 	register cell_t *rp, \
 	cell_t *dp, \
-	register union workreg w, \
+	register void **wp, \
 	register cell_t tos
-
-union workreg {
-	void **p;
-	cell_t c;
-};
-
-const union workreg w0 = {.p = NULL};
 
 struct primitive {
 	struct link link;

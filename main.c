@@ -25,7 +25,7 @@ void engine(FTH_REGS)
 
 next:
 	ASMLABEL(next);
-	goto **(w.p = *(ip++));
+	goto **(wp = *(ip++));
 
 bye_code: /*: BYE ( bye ) ;*/
 	ASMLABEL(bye_code);
@@ -34,7 +34,7 @@ bye_code: /*: BYE ( bye ) ;*/
 docol_code: /*: DOCOL ( docol ) ;*/
 	ASMLABEL(docol_code);
 	PUSH(rp) = (cell_t)ip;
-	ip = (void ***)w.p + 1;
+	ip = (void ***)wp + 1;
 	goto next;
 exit_code: /*: EXIT ( exit ) ;*/
 	ASMLABEL(exit_code);
@@ -72,16 +72,16 @@ drop_code: /*: DROP ( drop ) ;*/
 	goto next;
 swap_code: /*: SWAP ( swap ) ;*/
 	ASMLABEL(swap_code);
-	w.c = sp[-1];
+	wp = (void **)sp[-1];
 	sp[-1] = tos;
-	tos = w.c;
+	tos = (cell_t)wp;
 	goto next;
 rot_code: /*: ROT ( rot ) ;*/
 	ASMLABEL(rot_code);
-	w.c = sp[-2];
+	wp = (void **)sp[-2];
 	sp[-2] = sp[-1];
 	sp[-1] = tos;
-	tos = w.c;
+	tos = (cell_t)wp;
 	goto next;
 
 over_code: /*: OVER ( over ) ;*/
@@ -95,21 +95,26 @@ nip_code: /*: NIP ( nip ) ;*/
 	goto next;
 tuck_code: /*: TUCK ( tuck ) ;*/
 	ASMLABEL(tuck_code);
-	w.c = sp[-1];
+	wp = (void **)sp[-1];
 	sp[-1] = tos;
-	PUSH(sp) = w.c;
+	PUSH(sp) = (cell_t)wp;
 	goto next;
 unrot_code: /*: -ROT ( unrot ) ;*/
 	ASMLABEL(unrot_code);
-	w.c = sp[-1];
+	wp = (void **)sp[-1];
 	sp[-1] = sp[-2];
 	sp[-2] = tos;
-	tos = w.c;
+	tos = (cell_t)wp;
 	goto next;
 
 store_code: /*: ! ( store ) ;*/
 	ASMLABEL(store_code);
 	*(cell_t *)tos = POP(sp);
+	tos = POP(sp);
+	goto next;
+addstore_code: /*: +! ( addstore ) ;*/
+	ASMLABEL(addstore_code);
+	*(cell_t *)tos += POP(sp);
 	tos = POP(sp);
 	goto next;
 fetch_code: /*: @ ( fetch ) ;*/
@@ -180,18 +185,18 @@ OP1(neqz,-,!=0) /*: 0<> ( neqz ) ;*/
 
 void execute(void **xt,cell_t *sp,cell_t *rp,cell_t *dp)
 {
-	static void *bye = &&ret;
+	static void *out_cfa = &&out_code;
 
-	void **ip[2] = {xt, &bye};
+	void **ip[2] = {xt, &out_cfa};
 	cell_t tos = POP(sp);
 
-	engine(ip, sp, rp, dp, w0, tos);
-ret:
+	engine(ip, sp, rp, dp, NULL, tos);
+out_code:
 	PUSH(sp) = tos;
 	return;
 }
 
-void interp(void **xt)
+void instance(void **xt)
 {
 	cell_t stack[64];
 	cell_t rstack[32];
@@ -204,7 +209,7 @@ int main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
-	engine(NULL, NULL, NULL, NULL, w0, 0);
-	interp(&bye_def.cfa);
+	engine(NULL, NULL, NULL, NULL, NULL, 0);
+	instance(&bye_def.cfa);
 	return 0;
 }
