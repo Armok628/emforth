@@ -14,17 +14,21 @@ sub comma ($) {
 	my ($cell)=@_;
 	push @{$data{$state}},$cell;
 }
+sub commaxt ($) {
+	my ($word)=@_;
+	comma("&$ct{$word}_def.cfa");
+}
 
 # Control flow primitives
 sub markbw {
-	push @stack,scalar(@{$data{$state}});
+	push @stack,scalar @{$data{$state}};
 }
 sub markfw {
+	comma('UNRESOLVED MARK>');
 	markbw();
-	comma('');
 }
 sub fwresolve {
-	my $a=pop @stack;
+	my $a=(pop @stack)-1;
 	my $o=scalar(@{$data{$state}})-$a;
 	${$data{$state}}[$a]="(void **)($o*sizeof(cell_t))";
 }
@@ -54,7 +58,7 @@ my %imm = (
 		$data{$state}=[];
 	},
 	';' => sub {
-		comma("&$ct{'EXIT'}_def.cfa");
+		commaxt('EXIT');
 		undef $state;
 	},
 	';*/' => sub {
@@ -66,23 +70,44 @@ my %imm = (
 	')' => sub {
 	},
 	'POSTPONE' => sub {
-		comma("&$ct{shift @line}_def.cfa");
+		commaxt(shift @line);
 	},
 	'[\']' => sub {
-		comma("&$ct{'DOLIT'}_def.cfa");
-		comma("&$ct{shift @line}_def.cfa");
+		commaxt('DOLIT');
+		commaxt(shift @line);
 	},
 	'IF' => sub {
-		comma("&$ct{'0BRANCH'}_def.cfa");
+		commaxt('0BRANCH');
 		markfw();
 	},
 	'ELSE' => sub {
-		comma("&$ct{'0BRANCH'}_def.cfa");
+		commaxt('0BRANCH');
 		markfw();
 		swap();
 		fwresolve();
 	},
 	'THEN' => sub {
+		fwresolve();
+	},
+	'BEGIN' => sub {
+		markbw();
+	},
+	'AGAIN' => sub {
+		commaxt('BRANCH');
+		bwresolve();
+	},
+	'UNTIL' => sub {
+		commaxt('0BRANCH');
+		bwresolve();
+	},
+	'WHILE' => sub {
+		commaxt('0BRANCH');
+		markfw();
+		swap();
+	},
+	'REPEAT' => sub {
+		commaxt('BRANCH');
+		bwresolve();
 		fwresolve();
 	},
 	#TODO More immediates
@@ -97,11 +122,11 @@ sub interp ($) {
 		if ($imm{$word}) {
 			$imm{$word}();
 		} elsif ($word=~/^-?\d+$/) {
-			comma("&$ct{'DOLIT'}_def.cfa");
+			commaxt('DOLIT');
 			comma("(void **)$word");
 		} elsif ($state) {
 			if ($ct{$word}) {
-				comma("&$ct{$word}_def.cfa");
+				commaxt($word);
 			} else {
 				print "$word?\n";
 			}
