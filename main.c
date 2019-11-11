@@ -138,11 +138,27 @@ comma_code: /*: , ( comma ) ;*/
 	dp++;
 	tos = POP(sp);
 	goto next;
-ccomma_code: /*: C, ( ccomma ) ;*/
-	ASMLABEL(ccomma_code);
+c_comma_code: /*: C, ( c_comma ) ;*/
+	ASMLABEL(c_comma_code);
 	*(char *)dp = (char)tos;
 	dp = (cell_t *)((char *)dp+1);
 	tos = POP(sp);
+	goto next;
+
+to_r_code: /*: >R ( to_r ) ;*/
+	ASMLABEL(to_r_code);
+	PUSH(rp) = tos;
+	tos = POP(sp);
+	goto next;
+r_from_code: /*: R> ( r_from ) ;*/
+	ASMLABEL(r_from_code);
+	PUSH(sp) = tos;
+	tos = POP(rp);
+	goto next;
+r_fetch_code: /*: R@ ( r_fetch ) ;*/
+	ASMLABEL(r_fetch_code);
+	PUSH(sp) = tos;
+	tos = rp[-1];
 	goto next;
 
 #define OP2(n,a,b) \
