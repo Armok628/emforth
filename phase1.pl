@@ -160,11 +160,9 @@ print $fh ";\n\n";
 for (reverse sort keys %ct) {
 	print $fh <<"EOT";
 static struct primitive $ct{$_}_def = {
-	.link = {
-		.prev = @{[$last?"&${last}_def.link":"NULL"]},
-		.name = "$_",
-		.namelen = @{[length.($imm{$_}?"|msb":"")]},
-	},
+	.prev = @{[$last?"&${last}_def":"NULL"]},
+	.name = "$_",
+	.namelen = @{[length.($imm{$_}?"|msb":"")]},
 	// .cfa = $cfa{$_},
 	.data = {@{[join ', ',@{$data{$_}}]}},
 };

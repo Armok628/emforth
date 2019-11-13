@@ -18,7 +18,7 @@ void engine(FTH_REGS)
 		struct primitive *d = latest;
 		for (size_t i = 0; i < countof(cfas); i++) {
 			d->cfa = cfas[i];
-			d = (struct primitive *)d->link.prev;
+			d = d->prev;
 		}
 		return;
 	}

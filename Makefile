@@ -1,6 +1,6 @@
 CFLAGS = -Os -g -Wall -Wextra
 
-WORD_LOCS = main.c
+WORD_SRCS = main.c
 
 a.out: main.c fthdef.h dict.c cfas.c
 	$(CC) $(CFLAGS) $< -o $@
@@ -9,8 +9,8 @@ labeled: main.c fthdef.h dict.c cfas.c
 	$(CC) $(CFLAGS) -DUSE_ASMLABELS $<
 
 cfas.c:
-dict.c: phase1.pl $(WORD_LOCS)
-	./$< $(WORD_LOCS)
+dict.c: phase1.pl $(WORD_SRCS)
+	./$< $(WORD_SRCS)
 
 .PHONY: clean cleaner cleanest
 clean:

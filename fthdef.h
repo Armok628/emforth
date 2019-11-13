@@ -18,12 +18,6 @@ typedef int16_t cell_t;
 typedef uint16_t ucell_t;
 #endif
 
-struct link {
-	struct link *prev;
-	char *name;
-	cell_t namelen;
-};
-
 #define FTH_REGS \
 	register void **ip[], \
 	register cell_t *sp, \
@@ -33,7 +27,9 @@ struct link {
 	register cell_t tos
 
 struct primitive {
-	struct link link;
+	struct primitive *prev;
+	char *name;
+	cell_t namelen;
 	void *cfa;
 	void **data[];
 };
