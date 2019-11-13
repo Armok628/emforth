@@ -2,8 +2,8 @@
 #define FTHDEF_H
 #include <stdint.h>
 #if INTPTR_MAX > 0xFFFFFFFF
-typedef __uint128_t udcell_t;
-typedef __int128_t dcell_t;
+typedef unsigned __int128 udcell_t;
+typedef __int128 dcell_t;
 typedef int64_t cell_t;
 typedef uint64_t ucell_t;
 #elif INTPTR_MAX > 0xFFFF
