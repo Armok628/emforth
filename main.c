@@ -29,6 +29,7 @@ next:
 
 bye_code: /*: BYE ( bye ) ;*/
 	ASMLABEL(bye_code);
+	PUSH(sp) = tos;
 	return;
 
 docol_code: /*: DOCOL ( docol ) ;*/
@@ -45,6 +46,11 @@ dolit_code: /*: DOLIT ( dolit ) ;*/
 	PUSH(sp) = tos;
 	tos = *(cell_t *)ip++;
 	goto next;
+execute_code: /*: EXECUTE ( execute ) ;*/
+	ASMLABEL(execute_code);
+	wp = (void **)tos;
+	tos = POP(sp);
+	goto **wp;
 
 branch_code: /*: BRANCH ( branch ) ;*/
 	ASMLABEL(branch_code);
@@ -208,33 +214,28 @@ OP1(neqz,-,!=0) /*: 0<> ( neqz ) ;*/
 
 }
 
-void execute(void **xt,cell_t *sp,cell_t *rp,cell_t *dp)
+void init_cfas(void)
 {
-	static void *out_cfa = &&out_code;
-
-	void **ip[2] = {xt, &out_cfa};
-	cell_t tos = POP(sp);
-
-	engine(ip, sp, rp, dp, NULL, tos);
-out_code:
-	PUSH(sp) = tos;
-	return;
+	engine(0, 0, 0, 0, 0, 0);
 }
 
-void instance(void **xt)
+void thread(void ***ip0)
 {
-	cell_t stack[64];
-	cell_t rstack[32];
-	cell_t udata[1024];
+	cell_t sp0[64], rp0[32], dp0[1024];
 
-	execute(xt, stack, rstack, udata);
+	engine(ip0, sp0, rp0, dp0, NULL, 0);
 }
 
-int main(int argc, char **argv)
+int main()
 {
-	(void)argc;
-	(void)argv;
-	engine(NULL, NULL, NULL, NULL, NULL, 0);
-	instance(&bye_def.cfa);
+	static void **test[] = {
+		&dolit_def.cfa, (void **)2,
+		&dup_def.cfa,
+		&dolit_def.cfa, &add_def.cfa, &execute_def.cfa,
+		&bye_def.cfa
+	};
+
+	init_cfas();
+	thread(test);
 	return 0;
 }
