@@ -121,11 +121,11 @@ sub interp ($) {
 		my $word=shift @line;
 		if ($imm{$word}) {
 			$imm{$word}();
-		} elsif ($word=~/^-?\d+$/) {
-			commaxt('DOLIT');
-			comma("(void **)$word");
 		} elsif ($state) {
-			if ($ct{$word}) {
+			if ($word=~/^-?\d+$/) {
+				commaxt('DOLIT');
+				comma("(void **)$word");
+			} elsif ($ct{$word}) {
 				commaxt($word);
 			} else {
 				print "$word?\n";
