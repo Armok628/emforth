@@ -3,7 +3,7 @@
 #include "fthdef.h"
 
 #ifdef USE_ASMLABELS
-#define ASMLABEL(x) asm (#x ":")
+#define ASMLABEL(x) asm ("."#x":")
 #else
 #define ASMLABEL(x)
 #endif
@@ -25,7 +25,7 @@ void engine(FTH_REGS)
 	}
 
 next:
-//	ASMLABEL(next);
+	// ASMLABEL(next); // < clang doesn't like this one
 	goto **(wp = *(ip++));
 
 #include "prims.c"
