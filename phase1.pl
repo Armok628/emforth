@@ -24,16 +24,16 @@ sub markbw {
 	push @stack,scalar @{$data{$state}};
 }
 sub markfw {
-	comma('UNRESOLVED MARK>');
 	markbw();
+	comma('UNRESOLVED_MARK');
 }
 sub fwresolve {
-	my $a=(pop @stack)-1;
+	my $a=pop @stack;
 	my $o=scalar(@{$data{$state}})-$a;
 	${$data{$state}}[$a]="(void **)($o*sizeof(cell_t))";
 }
 sub bwresolve {
-	my $o=$stack[@stack-1]-scalar(@{$data{$state}});
+	my $o=pop(@stack)-scalar(@{$data{$state}});
 	comma("(void **)($o*sizeof(cell_t))");
 }
 
