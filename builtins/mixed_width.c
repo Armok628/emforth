@@ -3,7 +3,7 @@
 umdivmod_code:
 	ASMLABEL(umdivmod_code);
 #if defined(__x86_64__)
-	__asm__("divq %4"
+	asm ("divq %4"
 		:"=d"(sp[-2]), "=a"(tos)
 		:"d"(sp[-1]), "a"(sp[-2]), "r"(tos)
 		:);
