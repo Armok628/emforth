@@ -1,7 +1,7 @@
 CFLAGS = -Os -g -Wall -Wextra
 
-WORD_LOCS = main.c builtin/*
-PRIM_LOCS = builtin/*.c
+WORD_LOCS = main.c builtins/*
+PRIM_LOCS = builtins/*.c
 
 a.out: main.c fthdef.h prims.c dict.c cfas.c
 	$(CC) $(CFLAGS) $< -o $@
