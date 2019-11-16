@@ -59,7 +59,7 @@ dovar_code: /*: DOVAR ( dovar ) ;*/
 	tos = (cell_t)(wp+1);
 	goto next;
 dodefer_code: /*: DODEFER ( dodefer ) ;*/
-	ASMLABEL(dovar_code);
+	ASMLABEL(dodefer_code);
 	wp = *(void ***)(wp+1);
 	goto **wp;
 
