@@ -1,19 +1,30 @@
 #ifndef FTHDEF_H
 #define FTHDEF_H
 #include <stdint.h>
-#if INTPTR_MAX > 0xFFFFFFFF
-typedef unsigned __int128 udcell_t;
-typedef __int128 dcell_t;
+
+#define CELL64 (INTPTR_MAX == 0x7FFFFFFFFFFFFFFFLL)
+#define CELL32 (INTPTR_MAX == 0x7FFFFFFFL)
+#define CELL16 (INTPTR_MAX == 0x7FFF)
+
+#if CELL64
+#if !defined(EMULATE_DOUBLES)
+typedef __int128_t dcell_t;
+typedef __uint128_t udcell_t;
+#endif
 typedef int64_t cell_t;
 typedef uint64_t ucell_t;
-#elif INTPTR_MAX > 0xFFFF
-typedef uint64_t udcell_t;
+#elif CELL32
+#if !defined(EMULATE_DOUBLES)
 typedef int64_t dcell_t;
+typedef uint64_t udcell_t;
+#endif
 typedef int32_t cell_t;
 typedef uint32_t ucell_t;
-#else
-typedef uint32_t udcell_t;
+#elif CELL16
+#if !defined(EMULATE_DOUBLES)
 typedef int32_t dcell_t;
+typedef uint32_t dcell_t;
+#endif
 typedef int16_t cell_t;
 typedef uint16_t ucell_t;
 #endif
