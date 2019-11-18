@@ -24,8 +24,8 @@ void engine(FTH_REGS)
 		return;
 	}
 
+	ASMLABEL(next);
 next:
-	// ASMLABEL(next); // < clang doesn't like this one
 	goto **(wp = *(ip++));
 
 #include "prims.c"
