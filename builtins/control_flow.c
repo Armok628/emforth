@@ -1,3 +1,8 @@
+exit_code: /*: EXIT ( exit ) ;*/
+	ASMLABEL(exit_code);
+	ip = (void ***)POP(rp);
+	goto next;
+
 bye_code: /*: BYE ( bye ) ;*/
 	ASMLABEL(bye_code);
 	PUSH(sp) = tos;

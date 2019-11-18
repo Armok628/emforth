@@ -10,12 +10,6 @@ dolit_code: /*: DOLIT ( dolit ) ;*/
 	tos = *(cell_t *)ip++;
 	goto next;
 
-exit_code: /*: EXIT ( exit ) ;*/
-	ASMLABEL(exit_code);
-	ip = (void ***)POP(rp);
-	goto next;
-
-
 doconst_code: /*: DOCONST ( doconst ) ;*/
 	ASMLABEL(doconst_code);
 	PUSH(sp) = tos;
