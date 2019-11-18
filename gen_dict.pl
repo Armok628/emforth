@@ -49,11 +49,13 @@ sub swap {
 my %imm = (
 	'/*:' => sub {
 		$state=shift @line;
+		$ct{$state} = $line[1];
 		$cfa{$state}="&&$ct{$state}_code";
 		$data{$state}=[];
 	},
 	':' => sub {
 		$state=shift @line;
+		$ct{$state} = $line[1];
 		$cfa{$state}="&&$ct{'DOCOL'}_code";
 		$data{$state}=[];
 	},
@@ -134,31 +136,16 @@ sub interp ($) {
 	}
 }
 
-# Collect input lines
-my @lines=(<>);
-# Collect C tokens from input
-/: (\S+) \( (\S+) \)/ and $ct{$1}=$2 for @lines;
 # Interpret every line of input
-&interp for @lines;
-
-# Output code field address array to file
-my $fh;
-open($fh,'>','cfas.c') or die;
-print $fh "static void *cfas[] = {\n";
-for (sort keys %ct) {
-	print $fh "\t$cfa{$_},\n"
-}
-print $fh "};";
-close $fh;
+&interp for (<>);
 
 # Output dictionary links to file
-open($fh,'>','dict.c') or die;
 my $last;
-print $fh "static struct primitive\n\t";
-print $fh join ",\n\t",map {"${_}_def"} values %ct;
-print $fh ";\n\n";
+print "static struct primitive\n\t";
+print join ",\n\t",map {"${_}_def"} sort values %ct, "latest";
+print ";\n\n";
 for (reverse sort keys %ct) {
-	print $fh <<"EOT";
+	print <<"EOT";
 static struct primitive $ct{$_}_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "$_",
@@ -169,5 +156,12 @@ static struct primitive $ct{$_}_def = {
 EOT
 	$last=$ct{$_};
 }
-print $fh "static struct primitive *latest = &${last}_def;\n";
-close $fh;
+print <<"EOT"
+static struct primitive latest_def = {
+	.prev = @{[$last?"&${last}_def":"NULL"]},
+	.name = "LATEST",
+	.namelen = 6,
+	// .cfa = &&doconst_code,
+	.data = {(void **)&latest_def},
+};
+EOT

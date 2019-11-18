@@ -11,9 +11,11 @@ labeled: main.c fthdef.h prims.c dict.c cfas.c
 prims.c: $(PRIM_LOCS)
 	find $(WORD_LOCS) | grep \\.c$$ | sed 's/.*/#include "&"/' > $@
 
-cfas.c:
-dict.c: phase1.pl $(WORD_LOCS)
-	perl $< $(WORD_LOCS)
+dict.c: gen_dict.pl $(WORD_LOCS)
+	perl $< $(WORD_LOCS) > $@
+
+cfas.c: gen_cfas.pl dict.c
+	perl $< dict.c > $@
 
 .PHONY: clean cleaner cleanest
 clean:

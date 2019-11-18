@@ -8,7 +8,7 @@
 #define ASMLABEL(x)
 #endif
 
-#define countof(a) (sizeof(a) / sizeof(a[0]))
+#define COUNT(a) (sizeof(a) / sizeof(a[0]))
 
 #include "dict.c"
 
@@ -16,8 +16,8 @@ void engine(FTH_REGS)
 {
 	#include "cfas.c"
 	if (!ip) {
-		struct primitive *d = latest;
-		for (size_t i = 0; i < countof(cfas); i++) {
+		struct primitive *d = &latest_def;
+		for (size_t i = 0; i < COUNT(cfas); i++) {
 			d->cfa = cfas[i];
 			d = d->prev;
 		}
