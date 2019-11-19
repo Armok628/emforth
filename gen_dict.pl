@@ -70,6 +70,12 @@ my %imm = (
 		$data{$state}=["(void **)".pop @stack];
 		undef $state;
 	},
+	'VARIABLE' => sub {
+		$state=shift @line;
+		$cfa{$state}="&&$ct{'DOVAR'}_code";
+		$data{$state}=["NULL"];
+		undef $state;
+	},
 	'C{' => sub {
 		my $w;
 		my @ws;
@@ -158,7 +164,13 @@ sub interp ($) {
 				$err = 1;
 			}
 		} else {
-			push @stack, $word if $word=~/^(-?\d+)$/;
+			if ($word=~/^(-?\d+)$/) {
+				push @stack, $word;
+			} elsif (exists $cfa{$word}
+					and $cfa{$word} eq "&&$ct{'DOVAR'}_code"
+					and @line>0 and $line[0] eq '!') {
+				$data{$word}=["(void **)".pop @stack];
+			}
 		}
 	}
 }
@@ -166,7 +178,7 @@ sub interp ($) {
 my @lines = (<>);
 # Collect C tokens
 for (@lines) {
-	$ct{$2}=$3 while /(:|CONSTANT) (\S+) \( (\S+) \)/g;
+	$ct{$2}=$3 while /(:|CONSTANT|VARIABLE) (\S+) \( (\S+) \)/g;
 }
 # Interpret every line of input
 &interp for @lines;

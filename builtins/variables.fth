@@ -1,0 +1,2 @@
+VARIABLE STATE ( state )
+0 STATE !
