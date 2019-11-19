@@ -116,6 +116,7 @@ my %imm = (
 );
 
 # Line interpreter
+my $err = 0;
 sub interp ($) {
 	chomp;
 	@line=split ' ',$_;
@@ -130,14 +131,21 @@ sub interp ($) {
 			} elsif ($ct{$word}) {
 				commaxt($word);
 			} else {
-				print "$word?\n";
+				print STDERR "$word?\n";
+				$err = 1;
 			}
 		}
 	}
 }
 
+my @lines = (<>);
+# Collect C tokens
+for (@lines) {
+	$ct{$1}=$2 while /: (\S+) \( (\S+) \)/g;
+}
 # Interpret every line of input
-&interp for (<>);
+&interp for @lines;
+die if $err;
 
 # Output dictionary links to file
 my $last;
