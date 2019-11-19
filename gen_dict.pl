@@ -49,13 +49,11 @@ sub swap {
 my %imm = (
 	'/*:' => sub {
 		$state=shift @line;
-		$ct{$state} = $line[1];
 		$cfa{$state}="&&$ct{$state}_code";
 		$data{$state}=[];
 	},
 	':' => sub {
 		$state=shift @line;
-		$ct{$state} = $line[1];
 		$cfa{$state}="&&$ct{'DOCOL'}_code";
 		$data{$state}=[];
 	},
@@ -66,11 +64,36 @@ my %imm = (
 	';*/' => sub {
 		undef $state;
 	},
+	'CONSTANT' => sub {
+		$state=shift @line;
+		$cfa{$state}="&&$ct{'DOCONST'}_code";
+		$data{$state}=[pop @stack];
+		undef $state;
+	},
+	'C{' => sub {
+		my $w;
+		my @ws;
+		while (@line) {
+			$w=shift @line;
+			last if $w eq '}';
+			push @ws,$w;
+		}
+		push @stack,"@ws";
+	},
+	'}' => sub {},
+	'C\\' => sub {
+		print "@line\n";
+		@line = ();
+	},
+	'\\' => sub {
+		@line = ();
+	},
 	'(' => sub {
-		do {} while @line and shift @line ne ')';
+		while (@line) {
+			last if shift @line eq ')';
+		}
 	},
-	')' => sub {
-	},
+	')' => sub {},
 	'POSTPONE' => sub {
 		commaxt(shift @line);
 	},
@@ -134,6 +157,8 @@ sub interp ($) {
 				print STDERR "$word?\n";
 				$err = 1;
 			}
+		} else {
+			push @stack, $word if $word=~/^(-?\d+)$/;
 		}
 	}
 }
@@ -141,7 +166,7 @@ sub interp ($) {
 my @lines = (<>);
 # Collect C tokens
 for (@lines) {
-	$ct{$1}=$2 while /: (\S+) \( (\S+) \)/g;
+	$ct{$2}=$3 while /(:|CONSTANT) (\S+) \( (\S+) \)/g;
 }
 # Interpret every line of input
 &interp for @lines;
