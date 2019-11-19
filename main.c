@@ -8,8 +8,6 @@
 #define ASMLABEL(x)
 #endif
 
-#define COUNT(a) (sizeof(a) / sizeof(a[0]))
-
 #include "dict.c"
 
 void engine(FTH_REGS)

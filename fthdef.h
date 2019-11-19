@@ -58,6 +58,7 @@ struct primitive {
 
 const ucell_t msb = ~(~0UL>>1);
 
+#define COUNT(a) (sizeof(a) / sizeof(a[0]))
 #define PUSH(x) *(x++)
 #define POP(x) *(--x)
 #endif
