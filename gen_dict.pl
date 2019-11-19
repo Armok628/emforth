@@ -67,7 +67,7 @@ my %imm = (
 	'CONSTANT' => sub {
 		$state=shift @line;
 		$cfa{$state}="&&$ct{'DOCONST'}_code";
-		$data{$state}=[pop @stack];
+		$data{$state}=["(void **)".pop @stack];
 		undef $state;
 	},
 	'C{' => sub {
