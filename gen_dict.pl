@@ -58,7 +58,7 @@ my %imm = (
 		$data{$state}=[];
 	},
 	';' => sub {
-		commaxt('EXIT');
+		commaxt('EXIT') if defined $state;
 		undef $state;
 	},
 	';*/' => sub {
