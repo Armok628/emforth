@@ -1,5 +1,5 @@
 #ifdef EMULATE_DOUBLES
-const ucell_t lohalf = (1UL << 4 * sizeof(cell_t)) - 1;
+static const ucell_t lohalf = (1UL << 4 * sizeof(cell_t)) - 1;
 #define LOAD_DOUBLE(p) ((p)[0] << 4 * sizeof(cell_t) | (p)[1])
 #define STORE_DOUBLE(p,v) \
 	do { \

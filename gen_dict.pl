@@ -151,9 +151,8 @@ sub interp ($) {
 	@line=split ' ',$_;
 	while (@line) {
 		my $word=shift @line;
-		if ($imm{$word}) {
-			$imm{$word}();
-		} elsif ($state) {
+		$imm{$word}(), next if exists $imm{$word};
+		if ($state) {
 			if ($word=~/^-?\d+$/) {
 				commaxt('DOLIT');
 				comma("(void **)$word");
@@ -163,14 +162,14 @@ sub interp ($) {
 				print STDERR "$word?\n";
 				$err = 1;
 			}
-		} else {
-			if ($word=~/^(-?\d+)$/) {
-				push @stack, $word;
-			} elsif (exists $cfa{$word}
-					and $cfa{$word} eq "&&$ct{'DOVAR'}_code"
-					and @line>0 and $line[0] eq '!') {
-				$data{$word}=["(void **)".pop @stack];
-			}
+			next;
+		}
+		if ($word=~/^(-?\d+)$/) {
+			push @stack, $word;
+		} elsif (exists $cfa{$word}
+				and $cfa{$word} eq "&&$ct{'DOVAR'}_code"
+				and @line>0 and $line[0] eq '!') {
+			$data{$word}=["(void **)".pop @stack];
 		}
 	}
 }

@@ -1,5 +1,3 @@
-#include <unistd.h>
-#include <errno.h>
 #include "fthdef.h"
 
 #ifdef USE_ASMLABELS
@@ -9,7 +7,6 @@
 #endif
 
 #include "dict.c"
-
 void engine(FTH_REGS)
 {
 	#include "cfas.c"
@@ -23,11 +20,9 @@ void engine(FTH_REGS)
 	}
 
 	ASMLABEL(next);
-next:
-	goto **(wp = *(ip++));
+next:	goto **(wp = *(ip++));
 
-#include "prims.c"
-
+	#include "prims.c"
 }
 
 void init_cfas(void)
@@ -45,9 +40,10 @@ void thread(void ***ip0)
 int main()
 {
 	static void **test[] = {
-		&dolit_def.cfa, (void **)2,
-		&dup_def.cfa,
-		&dolit_def.cfa, &add_def.cfa, &execute_def.cfa,
+		&raw_def.cfa,
+		&key_def.cfa,
+		&emit_def.cfa,
+		&unraw_def.cfa,
 		&bye_def.cfa
 	};
 

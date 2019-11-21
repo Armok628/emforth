@@ -1,3 +1,7 @@
+// C\ #include <unistd.h>
+// C\ #include <errno.h>
+// C\ #include <stdio.h>
+
 write_file_code: /*: WRITE-FILE ( write_file ) ;*/
 	ASMLABEL(write_file_code);
 	tos = write(tos, (char *)sp[-2], sp[-1]);
@@ -17,4 +21,16 @@ read_file_code: /*: READ-FILE ( read_file ) ;*/
 		tos = errno;
 	else
 		tos = 0;
+	goto next;
+
+key_code: /*: KEY ( key ) ;*/
+	ASMLABEL(key_code);
+	PUSH(sp) = tos;
+	tos = getchar();
+	goto next;
+
+emit_code: /*: EMIT ( emit ) ;*/
+	ASMLABEL(emit_code);
+	putchar(tos);
+	tos = POP(sp);
 	goto next;
