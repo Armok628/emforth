@@ -164,7 +164,11 @@ sub interp ($) {
 			}
 			next;
 		}
-		if ($word=~/^(-?\d+)$/) {
+		if ($word eq "?") { # Ignore C ternary operators
+			while (@line) {
+				last if shift @line eq ":";
+			}
+		} elsif ($word=~/^(-?\d+)$/) {
 			push @stack, $word;
 		} elsif (exists $cfa{$word}
 				and $cfa{$word} eq "&&$ct{'DOVAR'}_code"
