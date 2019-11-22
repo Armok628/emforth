@@ -1,5 +1,5 @@
 // C\ #include <termios.h>
-// C\ static struct termios term;
+static struct termios term;
 
 raw_code: /*: RAW ( raw ) ;*/
 	ASMLABEL(raw_code);
