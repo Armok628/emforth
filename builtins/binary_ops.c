@@ -1,14 +1,14 @@
-#define OP2(n,a,b) \
+#define OP2(n,a,b,...) \
 n##_code: ASMLABEL(n##_code); \
-	tos = b(POP(sp) a tos); \
+	tos = b((__VA_ARGS__ POP(sp)) a tos); \
 	goto next;
 OP2(add,+,) /*: + ( add ) ;*/
 OP2(sub,-,) /*: - ( sub ) ;*/
 OP2(mul,*,) /*: * ( mul ) ;*/
 OP2(div,/,) /*: / ( div ) ;*/
 OP2(mod,%,) /*: MOD ( mod ) ;*/
-OP2(lsh,<<,) /*: LSHIFT ( lsh ) ;*/
-OP2(rsh,>>,) /*: RSHIFT ( rsh ) ;*/
+OP2(shl,<<,,(ucell_t)) /*: LSHIFT ( shl ) ;*/
+OP2(shr,>>,,(ucell_t)) /*: RSHIFT ( shr ) ;*/
 
 OP2(gt,>,-) /*: > ( gt ) ;*/
 OP2(gte,>=,-) /*: >= ( gte ) ;*/
