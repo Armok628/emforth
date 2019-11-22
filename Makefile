@@ -1,6 +1,6 @@
 CFLAGS = -Os -g -Wall -Wextra
 
-WORD_LOCS = builtins/*[^~]
+WORD_LOCS = builtins/*.c builtins/*.fth
 
 a.out: main.c fthdef.h prims.c dict.c cfas.c
 	$(CC) $(CFLAGS) $< -o $@
