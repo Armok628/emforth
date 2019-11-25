@@ -30,11 +30,11 @@ sub bwresolve {
 }
 
 # Utilities
-sub comma ($) {
+sub comma {
 	my ($cell)=@_;
 	push @{$data{$latest}},$cell;
 }
-sub commaxt ($) {
+sub commaxt {
 	my ($word)=@_;
 	comma("&$ct{$word}_def.cfa");
 }
@@ -45,7 +45,7 @@ sub swap {
 sub define {
 	my ($n,$c,@d)=@_;
 	$latest=$n;
-	$cfa{$n}="&&$ct{!$c?$n:$c}_code";
+	$cfa{$n}="&&$ct{$c?$c:$n}_code";
 	$data{$n}=@d?[@d]:[];
 	$imm{$n}=0;
 }
