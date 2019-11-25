@@ -40,10 +40,8 @@ void thread(void ***ip0)
 int main()
 {
 	static void **test[] = {
-		&raw_def.cfa,
 		&key_def.cfa,
 		&emit_def.cfa,
-		&unraw_def.cfa,
 		&bye_def.cfa
 	};
 
