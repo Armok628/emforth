@@ -42,13 +42,10 @@ sub swap {
 	my ($a,$b)=splice @stack, -2;
 	push @stack, $b, $a;
 }
-sub word {
-	return shift @line;
-}
 sub define {
 	my ($n,$c,@d)=@_;
 	$latest=$n;
-	$cfa{$n}=!$c?"&&$ct{$n}_code":"&&$ct{$c}_code";
+	$cfa{$n}="&&$ct{!$c?$n:$c}_code";
 	$data{$n}=@d?[@d]:[];
 	$imm{$n}=0;
 }
@@ -56,10 +53,10 @@ sub define {
 # Primitive compiler words
 my %prim = (
 	'/*:' => sub {
-		define(word());
+		define(shift @line);
 	},
 	':' => sub {
-		define(word(),'DOCOL');
+		define(shift @line,'DOCOL');
 		$state=1;
 	},
 	';' => sub {
@@ -68,16 +65,16 @@ my %prim = (
 	},
 	';*/' => sub {},
 	'CONSTANT' => sub {
-		define(word(),'DOCONST','(void **)'.pop @stack);
+		define(shift @line,'DOCONST','(void **)'.pop @stack);
 	},
 	'VARIABLE' => sub {
-		define(word(),'DOVAR','NULL');
+		define(shift @line,'DOVAR','NULL');
 	},
 	'C{' => sub {
 		my $w;
 		my @ws;
 		while (@line) {
-			$w=word();
+			$w=shift @line;
 			last if $w eq '}';
 			push @ws,$w;
 		}
@@ -93,16 +90,16 @@ my %prim = (
 	},
 	'(' => sub {
 		while (@line) {
-			last if word() eq ')';
+			last if shift @line eq ')';
 		}
 	},
 	')' => sub {},
 	'POSTPONE' => sub {
-		commaxt(word());
+		commaxt(shift @line);
 	},
 	'[\']' => sub {
 		commaxt('DOLIT');
-		commaxt(word());
+		commaxt(shift @line);
 	},
 	'IF' => sub {
 		commaxt('0BRANCH');
@@ -150,7 +147,7 @@ sub interp ($) {
 	chomp;
 	@line=split ' ',$_;
 	while (@line) {
-		my $word=word();
+		my $word=shift @line;
 		$prim{$word}(), next if exists $prim{$word};
 		if ($state) {
 			if ($word=~/^-?\d+$/) {
@@ -166,7 +163,7 @@ sub interp ($) {
 		}
 		if ($word eq "?") { # Ignore C ternary operators
 			while (@line) {
-				last if word() eq ":";
+				last if shift @line eq ":";
 			}
 		} elsif ($word=~/^(-?\d+)$/) {
 			push @stack, $word;
