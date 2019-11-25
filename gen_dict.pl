@@ -3,25 +3,17 @@ use strict;
 use warnings;
 
 my @stack=();
-my $state;
+my $latest;
+my $state=0;
 my @line=();
 my %ct=();
 my %cfa=();
+my %imm=();
 my %data=(); # Hash of string array refs
-
-# Compilation primitive
-sub comma ($) {
-	my ($cell)=@_;
-	push @{$data{$state}},$cell;
-}
-sub commaxt ($) {
-	my ($word)=@_;
-	comma("&$ct{$word}_def.cfa");
-}
 
 # Control flow primitives
 sub markbw {
-	push @stack,scalar @{$data{$state}};
+	push @stack,scalar @{$data{$latest}};
 }
 sub markfw {
 	markbw();
@@ -29,58 +21,63 @@ sub markfw {
 }
 sub fwresolve {
 	my $a=pop @stack;
-	my $o=scalar(@{$data{$state}})-$a;
-	${$data{$state}}[$a]="(void **)($o*sizeof(cell_t))";
+	my $o=scalar(@{$data{$latest}})-$a;
+	${$data{$latest}}[$a]="(void **)($o*sizeof(cell_t))";
 }
 sub bwresolve {
-	my $o=pop(@stack)-scalar(@{$data{$state}});
+	my $o=pop(@stack)-scalar(@{$data{$latest}});
 	comma("(void **)($o*sizeof(cell_t))");
 }
 
 # Utilities
+sub comma ($) {
+	my ($cell)=@_;
+	push @{$data{$latest}},$cell;
+}
+sub commaxt ($) {
+	my ($word)=@_;
+	comma("&$ct{$word}_def.cfa");
+}
 sub swap {
-	my $b=pop @stack;
-	my $a=pop @stack;
-	push @stack, $b;
-	push @stack, $a;
+	my ($a,$b)=splice @stack, -2;
+	push @stack, $b, $a;
+}
+sub word {
+	return shift @line;
+}
+sub define {
+	my ($n,$c,@d)=@_;
+	$latest=$n;
+	$cfa{$n}=!$c?"&&$ct{$n}_code":"&&$ct{$c}_code";
+	$data{$n}=@d?[@d]:[];
+	$imm{$n}=0;
 }
 
-# Immediate words
-my %imm = (
+# Primitive compiler words
+my %prim = (
 	'/*:' => sub {
-		$state=shift @line;
-		$cfa{$state}="&&$ct{$state}_code";
-		$data{$state}=[];
+		define(word());
 	},
 	':' => sub {
-		$state=shift @line;
-		$cfa{$state}="&&$ct{'DOCOL'}_code";
-		$data{$state}=[];
+		define(word(),'DOCOL');
+		$state=1;
 	},
 	';' => sub {
-		commaxt('EXIT') if defined $state;
-		undef $state;
+		commaxt('EXIT');
+		$state=0;
 	},
-	';*/' => sub {
-		undef $state;
-	},
+	';*/' => sub {},
 	'CONSTANT' => sub {
-		$state=shift @line;
-		$cfa{$state}="&&$ct{'DOCONST'}_code";
-		$data{$state}=["(void **)".pop @stack];
-		undef $state;
+		define(word(),'DOCONST','(void **)'.pop @stack);
 	},
 	'VARIABLE' => sub {
-		$state=shift @line;
-		$cfa{$state}="&&$ct{'DOVAR'}_code";
-		$data{$state}=["NULL"];
-		undef $state;
+		define(word(),'DOVAR','NULL');
 	},
 	'C{' => sub {
 		my $w;
 		my @ws;
 		while (@line) {
-			$w=shift @line;
+			$w=word();
 			last if $w eq '}';
 			push @ws,$w;
 		}
@@ -96,16 +93,16 @@ my %imm = (
 	},
 	'(' => sub {
 		while (@line) {
-			last if shift @line eq ')';
+			last if word() eq ')';
 		}
 	},
 	')' => sub {},
 	'POSTPONE' => sub {
-		commaxt(shift @line);
+		commaxt(word());
 	},
 	'[\']' => sub {
 		commaxt('DOLIT');
-		commaxt(shift @line);
+		commaxt(word());
 	},
 	'IF' => sub {
 		commaxt('0BRANCH');
@@ -141,6 +138,9 @@ my %imm = (
 		bwresolve();
 		fwresolve();
 	},
+	'IMMEDIATE' => sub {
+		$imm{$latest}=1;
+	}
 	#TODO More immediates
 );
 
@@ -150,8 +150,8 @@ sub interp ($) {
 	chomp;
 	@line=split ' ',$_;
 	while (@line) {
-		my $word=shift @line;
-		$imm{$word}(), next if exists $imm{$word};
+		my $word=word();
+		$prim{$word}(), next if exists $prim{$word};
 		if ($state) {
 			if ($word=~/^-?\d+$/) {
 				commaxt('DOLIT');
@@ -166,7 +166,7 @@ sub interp ($) {
 		}
 		if ($word eq "?") { # Ignore C ternary operators
 			while (@line) {
-				last if shift @line eq ":";
+				last if word() eq ":";
 			}
 		} elsif ($word=~/^(-?\d+)$/) {
 			push @stack, $word;
