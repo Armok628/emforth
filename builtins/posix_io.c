@@ -17,18 +17,14 @@ read_file_code: /*: READ-FILE ( read_file ) ;*/
 	goto next;
 
 // C\ #include <stdio.h>
-// C\ #include <termios.h>
-static struct termios term;
+// C\ #include "builtins/setraw.h"
 
 key_code: /*: KEY ( key ) ;*/
 	ASMLABEL(key_code);
 	PUSH(sp) = tos;
-	tcgetattr(STDIN_FILENO,&term);
-	term.c_lflag&=~(ICANON|ECHO);
-	tcsetattr(STDIN_FILENO,TCSANOW,&term);
+	setraw(true);
 	tos = getchar();
-	term.c_lflag|=(ICANON|ECHO);
-	tcsetattr(STDIN_FILENO,TCSANOW,&term);
+	setraw(false);
 	goto next;
 
 emit_code: /*: EMIT ( emit ) ;*/
