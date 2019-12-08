@@ -7,7 +7,7 @@ my $latest;
 my $state=0;
 my @line=();
 my %ct=();
-my %cfa=();
+my %cf=();
 my %imm=();
 my %data=(); # Hash of string array refs
 
@@ -36,7 +36,7 @@ sub comma {
 }
 sub commaxt {
 	my ($word)=@_;
-	comma("&$ct{$word}_def.cfa");
+	comma("&$ct{$word}_def.cf");
 }
 sub swap {
 	my ($a,$b)=splice @stack, -2;
@@ -45,7 +45,7 @@ sub swap {
 sub define {
 	my ($n,$c,@d)=@_;
 	$latest=$n;
-	$cfa{$n}="&&$ct{$c?$c:$n}_code";
+	$cf{$n}="&&$ct{$c?$c:$n}_code";
 	$data{$n}=@d?[@d]:[];
 	$imm{$n}=0;
 }
@@ -65,7 +65,7 @@ my %prim = (
 	},
 	';*/' => sub {},
 	'CONSTANT' => sub {
-		define(shift @line,'DOCONST','(void **)'.pop @stack);
+		define(shift @line,'DOCON','(void **)'.pop @stack);
 	},
 	'VARIABLE' => sub {
 		define(shift @line,'DOVAR','NULL');
@@ -98,7 +98,7 @@ my %prim = (
 		commaxt(shift @line);
 	},
 	'[\']' => sub {
-		commaxt('DOLIT');
+		commaxt('LIT');
 		commaxt(shift @line);
 	},
 	'IF' => sub {
@@ -151,7 +151,7 @@ sub interp ($) {
 		$prim{$word}(), next if exists $prim{$word};
 		if ($state) {
 			if ($word=~/^-?\d+$/) {
-				commaxt('DOLIT');
+				commaxt('LIT');
 				comma("(void **)$word");
 			} elsif ($ct{$word}) {
 				commaxt($word);
@@ -167,8 +167,8 @@ sub interp ($) {
 			}
 		} elsif ($word=~/^(-?\d+)$/) {
 			push @stack, $word;
-		} elsif (exists $cfa{$word}
-				and $cfa{$word} eq "&&$ct{'DOVAR'}_code"
+		} elsif (exists $cf{$word}
+				and $cf{$word} eq "&&$ct{'DOVAR'}_code"
 				and @line>0 and $line[0] eq '!') {
 			$data{$word}=["(void **)".pop @stack];
 		}
@@ -195,7 +195,7 @@ static struct primitive $ct{$_}_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "$_",
 	.namelen = @{[length.($imm{$_}?"|msb":"")]},
-	// .cfa = $cfa{$_},
+	// .cf = $cf{$_},
 	.data = {@{[join ', ',@{$data{$_}}]}},
 };
 EOT
@@ -206,7 +206,7 @@ static struct primitive latest_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "LATEST",
 	.namelen = 6,
-	// .cfa = &&doconst_code,
+	// .cf = &&docon_code,
 	.data = {(void **)&latest_def},
 };
 EOT

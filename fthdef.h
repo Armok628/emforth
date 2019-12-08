@@ -52,7 +52,7 @@ struct primitive {
 	struct primitive *prev;
 	char *name;
 	cell_t namelen;
-	void *cfa;
+	void *cf;
 	void **data[];
 };
 

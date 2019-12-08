@@ -2,24 +2,24 @@ CFLAGS = -Os -g -Wall -Wextra
 
 WORD_LOCS = builtins/*.c builtins/*.fth
 
-a.out: main.c fthdef.h prims.c dict.c cfas.c
+a.out: main.c fthdef.h prims.c dict.c cfs.c
 	$(CC) $(CFLAGS) $< -o $@
 
-labeled: main.c fthdef.h prims.c dict.c cfas.c
+labeled: main.c fthdef.h prims.c dict.c cfs.c
 	$(CC) $(CFLAGS) -DUSE_ASMLABELS $<
 
-prims.c: $(PRIM_LOCS)
+prims.c: $(WORD_LOCS)
 	find $(WORD_LOCS) | grep \\.c$$ | sed 's/.*/#include "&"/' > $@
 
 dict.c: gen_dict.pl $(WORD_LOCS)
 	perl $< $(WORD_LOCS) > $@
 
-cfas.c: gen_cfas.pl dict.c
+cfs.c: gen_cfs.pl dict.c
 	perl $< dict.c > $@
 
 .PHONY: clean cleaner cleanest
 clean:
-	rm -f prims.c dict.c cfas.c
+	rm -f prims.c dict.c cfs.c
 cleaner: clean
 	rm -f a.out
 cleanest: cleaner

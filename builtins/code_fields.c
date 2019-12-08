@@ -4,13 +4,7 @@ docol_code: /*: DOCOL ( docol ) ;*/
 	ip = (void ***)wp + 1;
 	goto next;
 
-dolit_code: /*: DOLIT ( dolit ) ;*/
-	ASMLABEL(dolit_code);
-	PUSH(sp) = tos;
-	tos = *(cell_t *)ip++;
-	goto next;
-
-doconst_code: /*: DOCONST ( doconst ) ;*/
+docon_code: /*: DOCON ( docon ) ;*/
 	ASMLABEL(doconst_code);
 	PUSH(sp) = tos;
 	tos = (cell_t)wp[1];

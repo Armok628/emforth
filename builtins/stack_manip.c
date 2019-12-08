@@ -1,3 +1,9 @@
+lit_code: /*: LIT ( lit ) ;*/
+	ASMLABEL(lit_code);
+	PUSH(sp) = tos;
+	tos = *(cell_t *)ip++;
+	goto next;
+
 dup_code: /*: DUP ( dup ) ;*/
 	ASMLABEL(dup_code);
 	PUSH(sp) = tos;

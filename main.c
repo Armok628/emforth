@@ -9,11 +9,11 @@
 #include "dict.c"
 void engine(FTH_REGS)
 {
-	#include "cfas.c"
+	#include "cfs.c"
 	if (!ip) {
 		struct primitive *d = &latest_def;
-		for (size_t i = 0; i < COUNT(cfas); i++) {
-			d->cfa = cfas[i];
+		for (size_t i = 0; i < COUNT(cfs); i++) {
+			d->cf = cfs[i];
 			d = d->prev;
 		}
 		return;
@@ -25,7 +25,7 @@ next:	goto **(wp = *(ip++));
 	#include "prims.c"
 }
 
-void init_cfas(void)
+void init_cfs(void)
 {
 	engine(0, 0, 0, 0, 0, 0);
 }
@@ -40,12 +40,15 @@ void thread(void ***ip0)
 int main()
 {
 	static void **test[] = {
-		&key_def.cfa,
-		&emit_def.cfa,
-		&bye_def.cfa
+		&lit_def.cf,
+		(void **)1,
+		&key_def.cf,
+		&add_def.cf,
+		&emit_def.cf,
+		&bye_def.cf
 	};
 
-	init_cfas();
+	init_cfs();
 	thread(test);
 	return 0;
 }
