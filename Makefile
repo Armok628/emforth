@@ -1,4 +1,4 @@
-CFLAGS = -Os -g -Wall -Wextra
+CFLAGS = -Os -march=native -g -Wall -Wextra
 
 WORD_LOCS = builtins/*.c builtins/*.fth
 

@@ -196,9 +196,9 @@ static struct primitive $ct{$_}_def = {
 	.name = "$_",
 	.namelen = @{[length.($imm{$_}?"|msb":"")]},
 	// .cf = $cf{$_},
-	.data = {@{[join ', ',@{$data{$_}}]}},
-};
 EOT
+	print "\t.data = {@{[join ', ',@{$data{$_}}]}},\n" if (scalar @{$data{$_}});
+	print "};\n";
 	$last=$ct{$_};
 }
 print <<"EOT"
@@ -206,7 +206,7 @@ static struct primitive latest_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "LATEST",
 	.namelen = 6,
-	// .cf = &&docon_code,
+	// .cf = &&$ct{'DOVAR'}_code,
 	.data = {(void **)&latest_def},
 };
 EOT
