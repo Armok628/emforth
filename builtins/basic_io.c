@@ -7,10 +7,10 @@ key_code: /*: KEY ( key ) ;*/
 	setraw(true);
 	tos = getchar();
 	setraw(false);
-	next();
+	NEXT();
 
 emit_code: /*: EMIT ( emit ) ;*/
 	ASMLABEL(emit_code);
 	putchar(tos);
 	tos = POP(sp);
-	next();
+	NEXT();

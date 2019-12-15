@@ -1,3 +1,4 @@
+CC = clang
 CFLAGS = -Os -march=native -g -Wall -Wextra
 
 WORD_LOCS = builtins/*.c builtins/*.fth
@@ -12,10 +13,10 @@ prims.c: $(WORD_LOCS)
 	find $(WORD_LOCS) | grep \\.c$$ | sed 's/.*/#include "&"/' > $@
 
 dict.c: gen_dict.pl $(WORD_LOCS)
-	perl $< $(WORD_LOCS) > $@
+	./$< $(WORD_LOCS) > $@
 
 cfs.c: gen_cfs.pl dict.c
-	perl $< dict.c > $@
+	./$< dict.c > $@
 
 .PHONY: clean cleaner cleanest
 clean:

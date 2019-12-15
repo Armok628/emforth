@@ -20,8 +20,8 @@ void engine(FTH_REGS)
 	}
 
 	ASMLABEL(next);
-#define next() goto **(wp = *(ip++))
-	next();
+#define NEXT() goto **(wp = *(ip++))
+	NEXT();
 
 
 	#include "prims.c"

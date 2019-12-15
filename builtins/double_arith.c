@@ -28,10 +28,10 @@ um_divmod_code: /*: UM/MOD ( um_divmod ) ;*/
 	PUSH(sp) = d % tos;
 	tos = d / tos;
 #endif
-	next();
+	NEXT();
 
 m_add_code: /*: M+ ( m_add ) ;*/
 	ASMLABEL(m_add_code);
 	STORE_DOUBLE(&sp[-2], LOAD_DOUBLE(&sp[-2]) + (ucell_t)tos);
 	tos = POP(sp);
-	next();
+	NEXT();

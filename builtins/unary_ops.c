@@ -1,7 +1,7 @@
 #define OP1(n,a,b) \
 n##_code: ASMLABEL(n##_code); \
 	tos = a(tos b); \
-	next();
+	NEXT();
 OP1(inc,,+1) /*: 1+ ( inc ) ;*/
 OP1(dec,,-1) /*: 1- ( dec ) ;*/
 OP1(neg,-,) /*: NEGATE ( neg ) ;*/

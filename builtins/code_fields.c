@@ -2,19 +2,19 @@ docol_code: /*: DOCOL ( docol ) ;*/
 	ASMLABEL(docol_code);
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)wp + 1;
-	next();
+	NEXT();
 
 docon_code: /*: DOCON ( docon ) ;*/
 	ASMLABEL(doconst_code);
 	PUSH(sp) = tos;
 	tos = (cell_t)wp[1];
-	next();
+	NEXT();
 
 dovar_code: /*: DOVAR ( dovar ) ;*/
 	ASMLABEL(dovar_code);
 	PUSH(sp) = tos;
 	tos = (cell_t)wp + 1;
-	next();
+	NEXT();
 
 dodefer_code: /*: DODEFER ( dodefer ) ;*/
 	ASMLABEL(dodefer_code);
@@ -27,4 +27,4 @@ dodoes_code: /*: DODOES> ( dodoes ) ;*/
 	ip = (void ***)wp[1];
 	PUSH(sp) = tos;
 	tos = (cell_t)wp + 2;
-	next();
+	NEXT();

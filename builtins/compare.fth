@@ -1,0 +1,28 @@
+: COMPARE# ( compare_num )
+	2DUP > IF
+		2DROP 1
+	ELSE 2DUP < IF
+		2DROP -1
+	ELSE
+		2DROP 0
+	THEN THEN
+;
+
+: COMPARE ( compare )
+	ROT SWAP
+	2DUP COMPARE# >R
+	MIN >R
+	BEGIN
+		R@ 0>
+	WHILE
+		2DUP >R C@ R> C@
+		COMPARE# ?DUP IF
+			>R 2DROP R>
+			2R> 2DROP
+			EXIT
+		THEN
+		>R 1+ R> 1+
+		R> 1- >R
+	REPEAT
+	R> DROP 2DROP R>
+;
