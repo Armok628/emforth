@@ -10,6 +10,10 @@ OP2(mod,%,) /*: MOD ( mod ) ;*/
 OP2(shl,<<,,(ucell_t)) /*: LSHIFT ( shl ) ;*/
 OP2(shr,>>,,(ucell_t)) /*: RSHIFT ( shr ) ;*/
 
+OP2(or,|,) /*: OR ( or ) ;*/
+OP2(and,&,) /*: AND ( and ) ;*/
+OP2(xor,^,) /*: XOR ( xor ) ;*/
+
 OP2(gt,>,-) /*: > ( gt ) ;*/
 OP2(gte,>=,-) /*: >= ( gte ) ;*/
 OP2(lt,<,-) /*: < ( lt ) ;*/

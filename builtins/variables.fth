@@ -1,2 +1,5 @@
 VARIABLE STATE ( state )
 0 STATE !
+
+VARIABLE BASE ( base )
+10 BASE !

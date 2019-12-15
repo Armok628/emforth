@@ -35,3 +35,9 @@ m_add_code: /*: M+ ( m_add ) ;*/
 	STORE_DOUBLE(&sp[-2], LOAD_DOUBLE(&sp[-2]) + (ucell_t)tos);
 	tos = POP(sp);
 	NEXT();
+
+m_mul_code: /*: M* ( m_mul ) ;*/
+	ASMLABEL(m_mul_code);
+	STORE_DOUBLE(&sp[-1], (dcell_t)tos * sp[-1]);
+	sp++;
+	NEXT();
