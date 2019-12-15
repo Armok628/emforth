@@ -28,4 +28,3 @@ dodoes_code: /*: DODOES> ( dodoes ) ;*/
 	PUSH(sp) = tos;
 	tos = (cell_t)wp + 2;
 	next();
-// TODO: Would it be worthwile to replace some DOers with DODOES>?
