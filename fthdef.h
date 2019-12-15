@@ -41,4 +41,6 @@ const ucell_t msb = ~(~0UL>>1);
 	} while (0)
 #define UNROT(t,x,y,z) ROT(t,z,y,x)
 
+#define NEXT() goto **(wp = *(ip++))
+
 #endif

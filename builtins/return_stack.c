@@ -24,7 +24,7 @@ two_to_r_code: /*: 2>R ( two_to_r ) ;*/
 	NEXT();
 
 two_r_from_code: /*: 2R> ( two_r_from ) ;*/
-	ASMLABEL(two_to_r_code);
+	ASMLABEL(two_r_from_code);
 	PUSH(sp) = tos;
 	tos = POP(rp);
 	PUSH(sp) = POP(rp);
