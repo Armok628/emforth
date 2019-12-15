@@ -21,7 +21,7 @@ dodefer_code: /*: DODEFER ( dodefer ) ;*/
 	wp = (void **)wp[1];
 	goto **wp;
 
-dodoes_code: /*: DODOES> ( dodoes ) ;*/
+dodoes_code: /*: DODOES ( dodoes ) ;*/
 	ASMLABEL(dodoes_code);
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)wp[1];

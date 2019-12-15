@@ -51,7 +51,8 @@ sub define {
 }
 
 # Primitive compiler words
-my %prim = (
+my %prim;
+%prim = (
 	'/*:' => sub {
 		define(shift @line);
 	},
@@ -106,7 +107,7 @@ my %prim = (
 		markfw();
 	},
 	'ELSE' => sub {
-		commaxt('0BRANCH');
+		commaxt('BRANCH');
 		markfw();
 		swap();
 		fwresolve();
@@ -126,17 +127,23 @@ my %prim = (
 		bwresolve();
 	},
 	'WHILE' => sub {
-		commaxt('0BRANCH');
-		markfw();
+		$prim{'IF'}();
 		swap();
 	},
 	'REPEAT' => sub {
-		commaxt('BRANCH');
-		bwresolve();
+		$prim{'AGAIN'}();
 		fwresolve();
 	},
 	'IMMEDIATE' => sub {
 		$imm{$latest}=1;
+	},
+	'LITERAL' => sub {
+		commaxt('LIT');
+		comma('(void **)'.pop @stack);
+	},
+	'[CHAR]' => sub {
+		push @stack, "'".(split //,shift @line)[0]."'";
+		$prim{'LITERAL'}();
 	}
 	#TODO More immediates
 );
@@ -170,7 +177,7 @@ sub interp ($) {
 		} elsif (exists $cf{$word}
 				and $cf{$word} eq "&&$ct{'DOVAR'}_code"
 				and @line>0 and $line[0] eq '!') {
-			$data{$word}=["(void **)".pop @stack];
+			$data{$word}=['(void **)'.pop @stack];
 		}
 	}
 }

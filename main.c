@@ -19,7 +19,6 @@ void engine(FTH_REGS)
 		return;
 	}
 
-	ASMLABEL(next);
 	NEXT();
 
 	#include "prims.c"
@@ -30,7 +29,7 @@ void init_cfs(void)
 	engine(0, 0, 0, 0, 0, 0);
 }
 
-void thread(void ***ip0)
+void run_thread(void ***ip0)
 {
 	cell_t sp0[64], rp0[32], dp0[1024];
 
@@ -49,6 +48,6 @@ int main()
 	};
 
 	init_cfs();
-	thread(test);
+	run_thread(test);
 	return 0;
 }
