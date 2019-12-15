@@ -186,12 +186,12 @@ die if $err;
 
 # Output dictionary links to file
 my $last;
-print "static struct primitive\n\t";
+print "static struct fthdef\n\t";
 print join ",\n\t",map {"${_}_def"} sort values %ct, "latest";
 print ";\n\n";
 for (reverse sort keys %ct) {
 	print <<"EOT";
-static struct primitive $ct{$_}_def = {
+static struct fthdef $ct{$_}_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "$_",
 	.namelen = @{[length.($imm{$_}?"|msb":"")]},
@@ -202,7 +202,7 @@ EOT
 	$last=$ct{$_};
 }
 print <<"EOT"
-static struct primitive latest_def = {
+static struct fthdef latest_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "LATEST",
 	.namelen = 6,

@@ -11,7 +11,7 @@ void engine(FTH_REGS)
 {
 	#include "cfs.c"
 	if (!ip) {
-		struct primitive *d = &latest_def;
+		struct fthdef *d = &latest_def;
 		for (size_t i = 0; i < COUNT(cfs); i++) {
 			d->cf = cfs[i];
 			d = d->prev;
@@ -20,7 +20,9 @@ void engine(FTH_REGS)
 	}
 
 	ASMLABEL(next);
-next:	goto **(wp = *(ip++));
+#define next() goto **(wp = *(ip++))
+	next();
+
 
 	#include "prims.c"
 }

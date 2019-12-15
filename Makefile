@@ -2,10 +2,10 @@ CFLAGS = -Os -march=native -g -Wall -Wextra
 
 WORD_LOCS = builtins/*.c builtins/*.fth
 
-a.out: main.c fthdef.h prims.c dict.c cfs.c
+a.out: main.c fthdef.h cell.h prims.c dict.c cfs.c
 	$(CC) $(CFLAGS) $< -o $@
 
-labeled: main.c fthdef.h prims.c dict.c cfs.c
+labeled: main.c fthdef.h cell.h prims.c dict.c cfs.c
 	$(CC) $(CFLAGS) -DUSE_ASMLABELS $<
 
 prims.c: $(WORD_LOCS)

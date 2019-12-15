@@ -1,7 +1,7 @@
 #define OP2(n,a,b,...) \
 n##_code: ASMLABEL(n##_code); \
 	tos = b((__VA_ARGS__ POP(sp)) a tos); \
-	goto next;
+	next();
 OP2(add,+,) /*: + ( add ) ;*/
 OP2(sub,-,) /*: - ( sub ) ;*/
 OP2(mul,*,) /*: * ( mul ) ;*/
@@ -22,4 +22,22 @@ divmod_code: /*: /MOD ( divmod ) ;*/
 	wp = (void **)sp[-1];
 	sp[-1] = (cell_t)wp % tos;
 	tos =  (cell_t)wp / tos;
-	goto next;
+	next();
+
+min_code: /*: MIN ( min ) ;*/
+	ASMLABEL(min_code);
+{
+	cell_t x = POP(sp);
+	if (x < tos)
+		tos = x;
+}
+	next();
+
+max_code: /*: MAX ( max ) ;*/
+	ASMLABEL(max_code);
+{
+	cell_t x = POP(sp);
+	if (x > tos)
+		tos = x;
+}
+	next();

@@ -2,19 +2,19 @@ docol_code: /*: DOCOL ( docol ) ;*/
 	ASMLABEL(docol_code);
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)wp + 1;
-	goto next;
+	next();
 
 docon_code: /*: DOCON ( docon ) ;*/
 	ASMLABEL(doconst_code);
 	PUSH(sp) = tos;
 	tos = (cell_t)wp[1];
-	goto next;
+	next();
 
 dovar_code: /*: DOVAR ( dovar ) ;*/
 	ASMLABEL(dovar_code);
 	PUSH(sp) = tos;
 	tos = (cell_t)wp + 1;
-	goto next;
+	next();
 
 dodefer_code: /*: DODEFER ( dodefer ) ;*/
 	ASMLABEL(dodefer_code);
@@ -27,5 +27,5 @@ dodoes_code: /*: DODOES> ( dodoes ) ;*/
 	ip = (void ***)wp[1];
 	PUSH(sp) = tos;
 	tos = (cell_t)wp + 2;
-	goto next;
+	next();
 // TODO: Would it be worthwile to replace some DOers with DODOES>?
