@@ -25,3 +25,6 @@ addstore_code: /*: +! ( addstore ) ;*/
 	*(cell_t *)tos += POP(sp);
 	tos = POP(sp);
 	NEXT();
+
+// : 2! ( two_store ) TUCK ! CELL+ ! ;
+// : 2@ ( two_fetch ) DUP CELL+ @ SWAP @ ;

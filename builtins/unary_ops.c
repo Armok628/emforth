@@ -15,3 +15,6 @@ OP1(ltz,-,<0) /*: 0< ( ltz ) ;*/
 OP1(ltez,-,<=0) /*: 0<= ( ltez ) ;*/
 OP1(eqz,-,==0) /*: 0= ( eqz ) ;*/
 OP1(neqz,-,!=0) /*: 0<> ( neqz ) ;*/
+
+// : CELL+ ( cell_plus ) CELL + ;
+// : CELLS ( cells ) CELL * ;
