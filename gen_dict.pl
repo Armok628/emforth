@@ -196,7 +196,8 @@ my $last;
 print "static struct fthdef\n\t";
 print join ",\n\t",map {"${_}_def"} sort values %ct, "latest";
 print ";\n\n";
-for (reverse sort keys %ct) {
+
+sub print_def ($) {
 	print <<"EOT";
 static struct fthdef $ct{$_}_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
@@ -208,12 +209,8 @@ EOT
 	print "};\n";
 	$last=$ct{$_};
 }
-print <<"EOT"
-static struct fthdef latest_def = {
-	.prev = @{[$last?"&${last}_def":"NULL"]},
-	.name = "LATEST",
-	.namelen = 6,
-	// .cf = &&$ct{'DOVAR'}_code,
-	.data = {(void **)&latest_def},
-};
-EOT
+
+for (reverse sort keys %ct) {
+	&print_def if ($_ ne 'LATEST');
+}
+$_='LATEST'; &print_def; # Lazy hack

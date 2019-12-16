@@ -3,3 +3,6 @@ VARIABLE STATE ( state )
 
 VARIABLE BASE ( base )
 10 BASE !
+
+VARIABLE LATEST ( latest )
+C{ &latest_def } LATEST !
