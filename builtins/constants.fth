@@ -1,6 +1,6 @@
 C\ char pad[84];
 C{ &pad } CONSTANT PAD ( pad )
-C{ COUNT(pad) } CONSTANT /PAD ( perpad )
+C{ COUNT(pad) } CONSTANT /PAD ( per_pad )
 
 C{ sizeof(cell_t) } CONSTANT CELL ( cell )
 

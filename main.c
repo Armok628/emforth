@@ -38,17 +38,16 @@ void run_thread(void ***ip0)
 
 int main()
 {
+	#define XT(x) &x##_def.cf
+	#define LIT(x) XT(lit),(void **)(x)
 	static void **test[] = {
-		&key_def.cf,
-		&dup_def.cf,
-		&emit_def.cf,
-		&dup_def.cf,
-		&lit_def.cf,
-		(void **)'0',
-		&eq_def.cf,
-		&zbranch_def.cf,
-		(void **)(-7*sizeof(cell_t)),
-		&bye_def.cf,
+		XT(tib),
+		XT(dup),
+		XT(per_tib),
+		XT(accept),
+		XT(cr),
+		XT(type),
+		XT(bye),
 	};
 
 	init_cfs();

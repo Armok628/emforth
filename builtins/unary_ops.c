@@ -1,6 +1,5 @@
 #define OP1(n,a,b) \
-	ASMLABEL(n##_code); \
-n##_code: \
+n##_code: ASMLABEL(n##_code); \
 	tos = a(tos b); \
 	NEXT();
 
