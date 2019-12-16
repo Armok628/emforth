@@ -1,27 +1,27 @@
-store_code: /*: ! ( store ) ;*/
 	ASMLABEL(store_code);
+store_code: /*: ! ( store ) ;*/
 	*(cell_t *)tos = POP(sp);
 	tos = POP(sp);
 	NEXT();
 
-fetch_code: /*: @ ( fetch ) ;*/
 	ASMLABEL(fetch_code);
+fetch_code: /*: @ ( fetch ) ;*/
 	tos = *(cell_t *)tos;
 	NEXT();
 
-c_store_code: /*: C! ( c_store ) ;*/
 	ASMLABEL(c_store_code);
+c_store_code: /*: C! ( c_store ) ;*/
 	*(char *)tos = (char)POP(sp);
 	tos = POP(sp);
 	NEXT();
 
-c_fetch_code: /*: C@ ( c_fetch ) ;*/
 	ASMLABEL(c_fetch_code);
+c_fetch_code: /*: C@ ( c_fetch ) ;*/
 	tos = *(char *)tos;
 	NEXT();
 
-addstore_code: /*: +! ( addstore ) ;*/
 	ASMLABEL(addstore_code);
+addstore_code: /*: +! ( addstore ) ;*/
 	*(cell_t *)tos += POP(sp);
 	tos = POP(sp);
 	NEXT();

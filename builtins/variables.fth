@@ -6,6 +6,3 @@ VARIABLE BASE ( base )
 
 VARIABLE LATEST ( latest )
 C{ &latest_def } LATEST !
-
-VARIABLE >IN ( to_in )
-0 >IN !

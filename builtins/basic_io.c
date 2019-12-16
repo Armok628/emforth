@@ -1,16 +1,16 @@
 // C\ #include <stdio.h>
 // C\ #include "builtins/setraw.h"
 
-key_code: /*: KEY ( key ) ;*/
 	ASMLABEL(key_code);
+key_code: /*: KEY ( key ) ;*/
 	PUSH(sp) = tos;
 	setraw(true);
 	tos = getchar();
 	setraw(false);
 	NEXT();
 
-emit_code: /*: EMIT ( emit ) ;*/
 	ASMLABEL(emit_code);
+emit_code: /*: EMIT ( emit ) ;*/
 	putchar(tos);
 	tos = POP(sp);
 	NEXT();

@@ -1,28 +1,28 @@
-docol_code: /*: DOCOL ( docol ) ;*/
 	ASMLABEL(docol_code);
+docol_code: /*: DOCOL ( docol ) ;*/
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)wp + 1;
 	NEXT();
 
-docon_code: /*: DOCON ( docon ) ;*/
 	ASMLABEL(doconst_code);
+docon_code: /*: DOCON ( docon ) ;*/
 	PUSH(sp) = tos;
 	tos = (cell_t)wp[1];
 	NEXT();
 
-dovar_code: /*: DOVAR ( dovar ) ;*/
 	ASMLABEL(dovar_code);
+dovar_code: /*: DOVAR ( dovar ) ;*/
 	PUSH(sp) = tos;
 	tos = (cell_t)wp + 1;
 	NEXT();
 
-dodefer_code: /*: DODEFER ( dodefer ) ;*/
 	ASMLABEL(dodefer_code);
+dodefer_code: /*: DODEFER ( dodefer ) ;*/
 	wp = (void **)wp[1];
 	goto **wp;
 
-dodoes_code: /*: DODOES ( dodoes ) ;*/
 	ASMLABEL(dodoes_code);
+dodoes_code: /*: DODOES ( dodoes ) ;*/
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)wp[1];
 	PUSH(sp) = tos;

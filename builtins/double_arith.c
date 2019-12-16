@@ -15,8 +15,8 @@ static const ucell_t lohalf = (1UL << 4 * sizeof(cell_t)) - 1;
 	} while (0)
 #endif
 
-um_divmod_code: /*: UM/MOD ( um_divmod ) ;*/
 	ASMLABEL(um_divmod_code);
+um_divmod_code: /*: UM/MOD ( um_divmod ) ;*/
 #if defined(__x86_64__) && !defined(EMULATE_DOUBLES)
 	sp--;
 	asm ("divq %4"
@@ -30,14 +30,14 @@ um_divmod_code: /*: UM/MOD ( um_divmod ) ;*/
 #endif
 	NEXT();
 
-m_add_code: /*: M+ ( m_add ) ;*/
 	ASMLABEL(m_add_code);
+m_add_code: /*: M+ ( m_add ) ;*/
 	STORE_DOUBLE(&sp[-2], LOAD_DOUBLE(&sp[-2]) + (ucell_t)tos);
 	tos = POP(sp);
 	NEXT();
 
-m_mul_code: /*: M* ( m_mul ) ;*/
 	ASMLABEL(m_mul_code);
+m_mul_code: /*: M* ( m_mul ) ;*/
 	STORE_DOUBLE(&sp[-1], (dcell_t)tos * sp[-1]);
 	sp++;
 	NEXT();

@@ -39,12 +39,16 @@ void run_thread(void ***ip0)
 int main()
 {
 	static void **test[] = {
-		&lit_def.cf,
-		(void **)1,
 		&key_def.cf,
-		&add_def.cf,
+		&dup_def.cf,
 		&emit_def.cf,
-		&bye_def.cf
+		&dup_def.cf,
+		&lit_def.cf,
+		(void **)'0',
+		&eq_def.cf,
+		&zbranch_def.cf,
+		(void **)(-7*sizeof(cell_t)),
+		&bye_def.cf,
 	};
 
 	init_cfs();

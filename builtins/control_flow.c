@@ -1,33 +1,36 @@
-exit_code: /*: EXIT ( exit ) ;*/
 	ASMLABEL(exit_code);
+exit_code: /*: EXIT ( exit ) ;*/
 	ip = (void ***)POP(rp);
 	NEXT();
 
-bye_code: /*: BYE ( bye ) ;*/
 	ASMLABEL(bye_code);
+bye_code: /*: BYE ( bye ) ;*/
 	PUSH(sp) = tos;
 	return;
 
-branch_code: /*: BRANCH ( branch ) ;*/
 	ASMLABEL(branch_code);
+branch_code: /*: BRANCH ( branch ) ;*/
 	ip = (void ***)((char *)ip + *(cell_t *)ip);
-	tos = POP(sp);
 	NEXT();
 
-zbranch_code: /*: 0BRANCH ( zbranch ) ;*/
 	ASMLABEL(zbranch_code);
-	if (tos)
-		goto drop_code;
-	else
+zbranch_code: /*: 0BRANCH ( zbranch ) ;*/
+	if (!tos) {
+		tos = POP(sp);
 		goto branch_code;
+	} else {
+		tos = POP(sp);
+		ip++;
+		goto drop_code;
+	}
 
-goto_code: /*: GO-TO ( goto ) ;*/
 	ASMLABEL(goto_code);
+goto_code: /*: GO-TO ( goto ) ;*/
 	ip = *(void ****)ip;
 	NEXT();
 
-execute_code: /*: EXECUTE ( execute ) ;*/
 	ASMLABEL(execute_code);
+execute_code: /*: EXECUTE ( execute ) ;*/
 	wp = (void **)tos;
 	tos = POP(sp);
 	goto **wp;

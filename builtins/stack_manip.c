@@ -1,54 +1,54 @@
-lit_code: /*: LIT ( lit ) ;*/
 	ASMLABEL(lit_code);
+lit_code: /*: LIT ( lit ) ;*/
 	PUSH(sp) = tos;
 	tos = *(cell_t *)ip++;
 	NEXT();
 
-dup_code: /*: DUP ( dup ) ;*/
 	ASMLABEL(dup_code);
+dup_code: /*: DUP ( dup ) ;*/
 	PUSH(sp) = tos;
 	NEXT();
 
-drop_code: /*: DROP ( drop ) ;*/
 	ASMLABEL(drop_code);
+drop_code: /*: DROP ( drop ) ;*/
 	tos = POP(sp);
 	NEXT();
 
-swap_code: /*: SWAP ( swap ) ;*/
 	ASMLABEL(swap_code);
+swap_code: /*: SWAP ( swap ) ;*/
 	SWAP(cell_t, sp[-1], tos);
 	NEXT();
 
-rot_code: /*: ROT ( rot ) ;*/
 	ASMLABEL(rot_code);
+rot_code: /*: ROT ( rot ) ;*/
 	ROT(cell_t, sp[-2], sp[-1], tos);
 	NEXT();
 
-over_code: /*: OVER ( over ) ;*/
 	ASMLABEL(over_code);
+over_code: /*: OVER ( over ) ;*/
 	PUSH(sp) = tos;
 	tos = sp[-2];
 	NEXT();
 
-nip_code: /*: NIP ( nip ) ;*/
 	ASMLABEL(nip_code);
+nip_code: /*: NIP ( nip ) ;*/
 	(void)POP(sp);
 	NEXT();
 
-tuck_code: /*: TUCK ( tuck ) ;*/
 	ASMLABEL(tuck_code);
+tuck_code: /*: TUCK ( tuck ) ;*/
 	wp = (void **)sp[-1];
 	sp[-1] = tos;
 	PUSH(sp) = (cell_t)wp;
 	NEXT();
 
-unrot_code: /*: -ROT ( unrot ) ;*/
 	ASMLABEL(unrot_code);
+unrot_code: /*: -ROT ( unrot ) ;*/
 	UNROT(cell_t, sp[-2], sp[-1], tos);
 	NEXT();
 
-qdup_code: /*: ?DUP ( qdup ) ;*/
 	ASMLABEL(qdup_code);
+qdup_code: /*: ?DUP ( qdup ) ;*/
 	if (tos)
 		PUSH(sp) = tos;
 	NEXT();

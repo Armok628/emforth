@@ -42,6 +42,7 @@
 : LITERAL ( literal ) ( x -- )
 	LIT LIT , COMPILE,
 ; IMMEDIATE
+
 : INTERPRET-NAME ( interpret_name ) ( i*x c-addr u -- j*x )
 	STATE @ IF
 		DEFINED? ?DUP IF
@@ -64,4 +65,22 @@
 			[CHAR] ? EMIT
 		THEN THEN
 	THEN
+;
+
+: INTERPRET ( interpret ) ( i*x -- j*x )
+	BEGIN
+		PARSE-NAME
+		DUP
+	WHILE
+		INTERPRET-NAME
+	REPEAT
+;
+
+: QUIT ( quit ) ( i*x -- j*x )
+	BEGIN
+		REFILL INVERT
+	WHILE
+		( ['] ) INTERPRET ( CATCH )
+	REPEAT
+	BYE
 ;
