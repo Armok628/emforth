@@ -202,7 +202,7 @@ sub print_def ($) {
 static struct fthdef $ct{$_}_def = {
 	.prev = @{[$last?"&${last}_def":"NULL"]},
 	.name = "$_",
-	.namelen = @{[length.($imm{$_}?"|msb":"")]},
+	.namelen = @{[length.($imm{$_}?"|MSB":"")]},
 	// .cf = $cf{$_},
 EOT
 	print "\t.data = {@{[join ', ',@{$data{$_}}]}},\n" if (scalar @{$data{$_}});
