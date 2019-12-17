@@ -41,12 +41,11 @@ int main()
 	#define XT(x) &x##_def.cf
 	#define LIT(x) XT(lit),(void **)(x)
 	static void **test[] = {
-		XT(tib),
-		XT(dup),
-		XT(per_tib),
-		XT(accept),
+		XT(refill),
 		XT(cr),
+		XT(source),
 		XT(type),
+		XT(cr),
 		XT(bye),
 	};
 

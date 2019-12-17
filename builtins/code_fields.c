@@ -1,7 +1,7 @@
 docol_code: /*: DOCOL ( docol ) ;*/
 	ASMLABEL(docol_code);
 	PUSH(rp) = (cell_t)ip;
-	ip = (void ***)wp + 1;
+	ip = (void ***)&wp[1];
 	NEXT();
 
 docon_code: /*: DOCON ( docon ) ;*/
@@ -13,7 +13,7 @@ docon_code: /*: DOCON ( docon ) ;*/
 dovar_code: /*: DOVAR ( dovar ) ;*/
 	ASMLABEL(dovar_code);
 	PUSH(sp) = tos;
-	tos = (cell_t)wp + 1;
+	tos = (cell_t)&wp[1];
 	NEXT();
 
 dodefer_code: /*: DODEFER ( dodefer ) ;*/
@@ -26,5 +26,5 @@ dodoes_code: /*: DODOES ( dodoes ) ;*/
 	PUSH(rp) = (cell_t)ip;
 	ip = (void ***)wp[1];
 	PUSH(sp) = tos;
-	tos = (cell_t)wp + 2;
+	tos = (cell_t)&wp[2];
 	NEXT();
