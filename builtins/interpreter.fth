@@ -26,6 +26,7 @@
 
 : S>D ( s_to_d ) DUP 0< ;
 : NUMBER? ( number ) ( c-addr u -- n -1 | c-addr u 0 )
+	\ TODO Handle negative numbers, base prefixes
 	2DUP 0 S>D 2SWAP >NUMBER 0= IF
 		2DROP >R 2DROP R>
 		TRUE

@@ -39,13 +39,23 @@ void run_thread(void ***ip0)
 int main()
 {
 	#define XT(x) &x##_def.cf
-	#define LIT(x) XT(lit),(void **)(x)
+	#define IMM(x) (void **)(x)
+	#define CELLS(x) IMM(x*sizeof(cell_t))
+	#define LIT(x) XT(lit),IMM(x)
 	static void **test[] = {
 		XT(refill),
 		XT(cr),
-		XT(source),
+
+		XT(parse_name),
+		XT(dup),
+		XT(zbranch),
+		IMM(CELLS(5)),
 		XT(type),
 		XT(cr),
+		XT(branch),
+		IMM(CELLS(-7)),
+
+		XT(two_drop),
 		XT(bye),
 	};
 
