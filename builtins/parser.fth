@@ -16,12 +16,22 @@ VARIABLE >IN ( to_in )
 : ACCEPT ( accept ) ( c-addr u -- u )
 	DUP 0> INVERT IF 2DROP -1 EXIT THEN
 	KEY DUP 4 = IF DROP 2DROP -1 EXIT THEN
-	BEGIN ( c-addr u char )
-		DUP EMIT
-		ROT TUCK C! SWAP 1 /STRING
+	>R TUCK R>
+	BEGIN ( u0 c-addr u char )
+		DUP 127 = IF
+			DROP
+			27 EMIT [CHAR] [ EMIT [CHAR] D EMIT
+			BL EMIT
+			27 EMIT [CHAR] [ EMIT [CHAR] D EMIT
+			-1 /STRING
+		ELSE
+			DUP EMIT
+			ROT TUCK C! SWAP
+			1 /STRING
+		THEN
 		KEY OVER 0> INVERT OVER DUP 4 = SWAP 13 = OR OR
 	UNTIL
-	DROP NIP BL EMIT
+	DROP BL EMIT NIP -
 ;
 
 : REFILL ( refill ) ( -- flag )
