@@ -183,6 +183,7 @@ sub interp ($) {
 }
 
 my @lines = (<>);
+push @lines, "VARIABLE LATEST ( latest ) C{ &latest_def } LATEST !";
 # Collect C tokens
 for (@lines) {
 	$ct{$2}=$3 while /(:|CONSTANT|VARIABLE) (\S+) \( (\S+) \)/g;

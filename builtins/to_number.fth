@@ -1,3 +1,6 @@
+VARIABLE BASE ( base )
+10 BASE !
+
 : /STRING ( shift_string ) ( c-addr u n -- c-addr u )
 	TUCK - >R + R>
 ;
@@ -17,12 +20,11 @@
 		OVER C@ >DIGIT
 		DUP 0 BASE @ 1- WITHIN 0= IF
 			DROP EXIT
-		THEN
+		THEN ( ud c-addr u char )
 		-ROT 2>R >R
 		BASE @ TUCK
-		2>R M* DROP
-		2R> M* ROT + SWAP
-		R> M+ 2R>
-		1 /STRING
+		M* DROP >R M* R> +
+		R> M+
+		2R> 1 /STRING
 	REPEAT
 ;

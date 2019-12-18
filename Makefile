@@ -6,9 +6,6 @@ WORD_LOCS = builtins/*.c builtins/*.fth
 a.out: main.c fthdef.h cell.h prims.c dict.c cfs.c
 	$(CC) $(CFLAGS) $< -o $@
 
-labeled: main.c fthdef.h cell.h prims.c dict.c cfs.c
-	$(CC) $(CFLAGS) -DUSE_ASMLABELS $<
-
 prims.c: $(WORD_LOCS)
 	find $(WORD_LOCS) | grep \\.c$$ | sed 's/.*/#include "&"/' > $@
 

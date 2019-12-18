@@ -8,7 +8,8 @@ two_dup_code: /*: 2DUP ( two_dup ) ;*/
 
 two_drop_code: /*: 2DROP ( two_drop ) ;*/
 	ASMLABEL(two_drop_code);
-	sp -= 2;
+	sp--;
+	tos = POP(sp);
 	NEXT();
 
 two_swap_code: /*: 2SWAP ( two_swap ) ;*/

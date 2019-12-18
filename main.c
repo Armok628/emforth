@@ -1,9 +1,9 @@
 #include "fthdef.h"
 
-#ifdef USE_ASMLABELS
-#define ASMLABEL(x) asm ("."#x":")
-#else
+#ifdef NO_ASMLABELS
 #define ASMLABEL(x)
+#else
+#define ASMLABEL(x) asm ("."#x":")
 #endif
 
 #include "dict.c"
@@ -18,6 +18,9 @@ void engine(FTH_REGS)
 		}
 		return;
 	}
+
+	cell_t *sp0 = sp;
+	(void)sp0;
 
 	NEXT();
 
@@ -40,22 +43,25 @@ int main()
 {
 	#define XT(x) &x##_def.cf
 	#define IMM(x) (void **)(x)
-	#define CELLS(x) IMM(x*sizeof(cell_t))
+	#define CELLS * sizeof(cell_t)
 	#define LIT(x) XT(lit),IMM(x)
 	static void **test[] = {
 		XT(refill),
+		XT(drop),
 		XT(cr),
 
 		XT(parse_name),
-		XT(dup),
-		XT(zbranch),
-		IMM(CELLS(5)),
-		XT(type),
-		XT(cr),
-		XT(branch),
-		IMM(CELLS(-7)),
+		XT(number),
+		XT(not),
 
+		XT(zbranch),
+		IMM(5 CELLS),
 		XT(two_drop),
+		LIT('?'),
+		XT(dup),
+		XT(emit),
+
+		XT(emit),
 		XT(bye),
 	};
 

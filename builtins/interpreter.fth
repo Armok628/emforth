@@ -1,3 +1,6 @@
+VARIABLE STATE ( state )
+0 STATE !
+
 : >NAME ( to_name ) ( xt -- c-addr u )
 	CELL+ DUP @ SWAP CELL+ @
 ;
@@ -26,14 +29,29 @@
 
 : S>D ( s_to_d ) DUP 0< ;
 : NUMBER? ( number ) ( c-addr u -- n -1 | c-addr u 0 )
-	\ TODO Handle negative numbers, base prefixes
-	2DUP 0 S>D 2SWAP >NUMBER 0= IF
-		2DROP >R 2DROP R>
+	DUP 0> INVERT IF FALSE EXIT THEN
+	BASE @ >R
+	OVER C@ >R
+	     R@ [CHAR] $ = IF
+		16 BASE ! 1 /STRING
+	ELSE R@ [CHAR] # = IF
+		10 BASE ! 1 /STRING
+	ELSE R@ [CHAR] % = IF
+		2 BASE ! 1 /STRING
+	THEN THEN THEN R> DROP
+
+	OVER C@ [CHAR] - = IF 1 /STRING -1 ELSE 0 THEN >R
+
+	0 S>D 2OVER >NUMBER DUP 0= IF
+		2DROP DROP >R 2DROP R>
+		R> IF NEGATE THEN
 		TRUE
 	ELSE
-		DROP 2DROP
+		2DROP 2DROP
+		R> DROP
 		FALSE
 	THEN
+	R> BASE !
 ;
 
 \ DEFER COMPILE,
