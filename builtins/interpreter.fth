@@ -8,7 +8,7 @@ VARIABLE STATE ( state )
 	3 CELLS +
 ;
 
-: FIND-NAME ( find_name ) ( c-addr u wid -- xt -1 | c-addr u 0 )
+: SEARCH-WORDLIST ( search_wordlist ) ( c-addr u wid -- 0 | xt +/-1 )
 	BEGIN
 		@ ?DUP
 	WHILE
@@ -23,8 +23,11 @@ VARIABLE STATE ( state )
 	REPEAT
 	FALSE
 ;
-: DEFINED? ( defined ) ( c-addr u -- xt flag | c-addr u 0 )
-	LATEST FIND-NAME
+: DEFINED? ( defined ) ( c-addr u -- xt +/-1 | c-addr u 0 )
+	\ TODO Multiple wordlist handling
+	2DUP LATEST SEARCH-WORDLIST DUP IF
+		2>R 2DROP 2R>
+	THEN
 ;
 
 : S>D ( s_to_d ) DUP 0< ;
