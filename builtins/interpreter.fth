@@ -25,7 +25,7 @@ VARIABLE STATE ( state )
 ;
 : DEFINED? ( defined ) ( c-addr u -- xt +/-1 | c-addr u 0 )
 	\ TODO Multiple wordlist handling
-	2DUP LATEST SEARCH-WORDLIST DUP IF
+	2DUP FORTH-WORDLIST SEARCH-WORDLIST DUP IF
 		2>R 2DROP 2R>
 	THEN
 ;

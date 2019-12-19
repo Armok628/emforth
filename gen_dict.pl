@@ -183,7 +183,7 @@ sub interp ($) {
 }
 
 my @lines = (<>);
-push @lines, "VARIABLE LATEST ( latest ) C{ &latest_def } LATEST !";
+push @lines, "VARIABLE FORTH-WORDLIST ( forth_wordlist ) C{ &latest_def } FORTH-WORDLIST !";
 # Collect C tokens
 for (@lines) {
 	$ct{$2}=$3 while /(:|CONSTANT|VARIABLE) (\S+) \( (\S+) \)/g;
@@ -212,6 +212,6 @@ EOT
 }
 
 for (reverse sort keys %ct) {
-	&print_def if ($_ ne 'LATEST');
+	&print_def if ($_ ne 'FORTH-WORDLIST');
 }
-$_='LATEST'; &print_def; # Lazy hack
+$_='FORTH-WORDLIST'; &print_def; # Lazy hack
