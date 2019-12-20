@@ -183,7 +183,7 @@ sub interp ($) {
 }
 
 my @lines = (<>);
-push @lines, "VARIABLE FORTH-WORDLIST ( forth_wordlist ) C{ &latest_def } FORTH-WORDLIST !";
+push @lines, "VARIABLE FORTH-WORDLIST ( forth_wordlist ) C{ &forth_wordlist_def } FORTH-WORDLIST !";
 # Collect C tokens
 for (@lines) {
 	$ct{$2}=$3 while /(:|CONSTANT|VARIABLE) (\S+) \( (\S+) \)/g;
@@ -195,7 +195,7 @@ die if $err;
 # Output dictionary links to file
 my $last;
 print "static struct fthdef\n\t";
-print join ",\n\t",map {"${_}_def"} sort values %ct, "latest";
+print join ",\n\t",map {"${_}_def"} sort values %ct;
 print ";\n\n";
 
 sub print_def ($) {

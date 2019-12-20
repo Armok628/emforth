@@ -11,7 +11,7 @@ void engine(FTH_REGS)
 {
 	#include "cfs.c"
 	if (!ip) {
-		struct fthdef *d = &latest_def;
+		struct fthdef *d = &forth_wordlist_def;
 		for (size_t i = 0; i < COUNT(cfs); i++) {
 			d->cf = cfs[i];
 			d = d->prev;

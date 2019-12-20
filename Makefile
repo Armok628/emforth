@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Os -g -Wall -Wextra
+CFLAGS = -Wall -Wextra -g -Os
 
 WORD_LOCS = builtins/*.c builtins/*.fth
 
