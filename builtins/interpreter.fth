@@ -8,21 +8,6 @@ VARIABLE STATE ( state )
 	3 CELLS +
 ;
 
-: SEARCH-WORDLIST ( search_wordlist ) ( c-addr u wid -- 0 | xt +/-1 )
-	BEGIN
-		@ ?DUP
-	WHILE
-		>R
-		2DUP R@
-		>NAME COMPARE 0= IF
-			2DROP R> TRUE
-			( OVER IMMEDIATE? IF NEGATE THEN )
-			EXIT
-		THEN
-		R>
-	REPEAT
-	FALSE
-;
 : DEFINED? ( defined ) ( c-addr u -- xt +/-1 | c-addr u 0 )
 	\ TODO Multiple wordlist handling
 	2DUP FORTH-WORDLIST SEARCH-WORDLIST DUP IF
@@ -32,7 +17,7 @@ VARIABLE STATE ( state )
 
 : S>D ( s_to_d ) DUP 0< ;
 : NUMBER? ( number ) ( c-addr u -- n -1 | c-addr u 0 )
-	DUP 0> INVERT IF FALSE EXIT THEN
+	DUP 0<= IF FALSE EXIT THEN
 	BASE @ >R
 	OVER C@ >R
 	     R@ [CHAR] $ = IF

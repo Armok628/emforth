@@ -31,3 +31,19 @@ VARIABLE #ORDER ( n_order )
 	REPEAT
 	R> #ORDER !
 ;
+
+: SEARCH-WORDLIST ( search_wordlist ) ( c-addr u wid -- 0 | xt +/-1 )
+	BEGIN
+		@ ?DUP
+	WHILE
+		>R
+		2DUP R@
+		>NAME COMPARE 0= IF
+			2DROP R> TRUE
+			( OVER IMMEDIATE? IF NEGATE THEN )
+			EXIT
+		THEN
+		R>
+	REPEAT
+	FALSE
+;
