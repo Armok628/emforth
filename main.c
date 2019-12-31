@@ -47,21 +47,11 @@ int main()
 	#define LIT(x) XT(lit),IMM(x)
 	static void **test[] = {
 		XT(refill),
-		XT(drop),
-		XT(cr),
-
-		XT(parse_name),
-		XT(number),
-		XT(not),
-
 		XT(zbranch),
-		IMM(5 CELLS),
-		XT(two_drop),
-		LIT('?'),
-		XT(dup),
-		XT(emit),
-
-		XT(emit),
+		IMM(4 CELLS),
+		XT(interpret),
+		XT(branch),
+		IMM(-5 CELLS),
 		XT(bye),
 	};
 

@@ -30,18 +30,18 @@ divmod_code: /*: /MOD ( divmod ) ;*/
 
 min_code: /*: MIN ( min ) ;*/
 	ASMLABEL(min_code);
-{
-	cell_t x = POP(sp);
-	if (x < tos)
-		tos = x;
-}
+	do {
+		cell_t x = POP(sp);
+		if (x < tos)
+			tos = x;
+	} while (0);
 	NEXT();
 
 max_code: /*: MAX ( max ) ;*/
-	ASMLABEL(max_code);
-{
-	cell_t x = POP(sp);
-	if (x > tos)
-		tos = x;
-}
+ASMLABEL(max_code);
+	do {
+		cell_t x = POP(sp);
+		if (x > tos)
+			tos = x;
+	} while (0);
 	NEXT();
