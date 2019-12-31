@@ -142,7 +142,8 @@ my %prim;
 		comma('(void **)'.pop @stack);
 	},
 	'[CHAR]' => sub {
-		push @stack, "'".(split //,shift @line)[0]."'";
+		my $char = (split //,shift @line)[0];
+		push @stack, $char eq "'" ? "'\\$char'" : "'$char'";
 		$prim{'LITERAL'}();
 	}
 	#TODO More immediates
