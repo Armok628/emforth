@@ -116,18 +116,35 @@ to_number_code: /*: >NUMBER ( to_number ) ;*/
 	NEXT();
 
 /*
+: /STRING ( shift_string ) TUCK - >R + R> ;
+
+: NUMBER ( number ) ( c-addr -- n -1 | c-addr 0 )
+	DUP C@ 0= IF 0 EXIT THEN
+	DUP COUNT 0 DUP 2SWAP >NUMBER IF
+		DROP 2DROP 0
+	ELSE
+		DROP DROP NIP -1
+	THEN
+;
+
 : INTERPRET ( interpret )
 	BEGIN
 		BL WORD
 		DUP C@
 	WHILE
-		FIND IF
-			EXECUTE
+		FIND ( DUP ) IF
+			\ 0> STATE @ 0= OR IF
+				EXECUTE
+			\ ELSE
+			\	COMPILE,
+			\ THEN
+		ELSE ( DROP ) NUMBER IF
+			\ STATE @ IF POSTPONE LITERAL THEN
 		ELSE
 			COUNT TYPE
-			[CHAR] ? EMIT
+			[CHAR] ? EMIT CR
 			EXIT
-		THEN
+		THEN THEN
 	REPEAT
 	DROP
 ;
