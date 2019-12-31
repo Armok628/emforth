@@ -49,12 +49,6 @@ word_code: /*: WORD ( word ) ;*/
 	} while (0);
 	NEXT();
 
-count_code: /*: COUNT ( count ) ;*/
-	ASMLABEL(count_code);
-	PUSH(sp) = tos + 1;
-	tos = *(char *)tos;
-	NEXT();
-
 type_code: /*: TYPE ( type ) ;*/
 	ASMLABEL(type_code);
 	fwrite((char *)POP(sp), sizeof(char), tos, stdout);
@@ -116,50 +110,8 @@ to_number_code: /*: >NUMBER ( to_number ) ;*/
 	NEXT();
 
 /*
+: COUNT ( count ) DUP C@ >R 1+ R> ;
 : /STRING ( shift_string ) TUCK - >R + R> ;
-
-: NUMBER ( number ) ( c-addr -- n -1 | c-addr 0 )
-	DUP C@ 0= IF 0 EXIT THEN
-	DUP COUNT
-
-	\ TODO: REFACTOR HEAVILY
-
-	DUP 3 = IF
-		OVER DUP 2 +
-		C@ [CHAR] ' = SWAP
-		C@ [CHAR] ' = AND IF
-			DROP NIP
-			1+ C@
-			TRUE EXIT
-		THEN
-	THEN
-
-	BASE @ >R
-	OVER C@ >R 1 /STRING
-	R@ [CHAR] $ = IF
-		16 BASE !
-	ELSE R@ [CHAR] # = IF
-		10 BASE !
-	ELSE R@ [CHAR] % = IF
-		2 BASE !
-	ELSE
-		-1 /STRING
-	THEN THEN THEN
-	R> DROP
-
-	OVER C@ [CHAR] - = IF 1 /STRING TRUE ELSE FALSE THEN >R
-
-	0 DUP 2SWAP >NUMBER NIP NIP IF
-		DROP
-		R> DROP
-		FALSE
-	ELSE
-		NIP
-		R> IF NEGATE THEN
-		TRUE
-	THEN
-	R> BASE !
-;
 
 : INTERPRET ( interpret )
 	BEGIN
