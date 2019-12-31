@@ -18,8 +18,10 @@ refill_code: /*: REFILL ( refill ) ;*/
 	if (source != tib) {
 		tos = 0;
 	} else if ((tos = -!feof(stdin))) {
-		fgets(tib, COUNT(tib), stdin);
-		sourcelen = strlen(tib);
+		int c, i = 0;
+		while (!feof(stdin) && (c = fgetc(stdin)) != '\n')
+			tib[i++] = c;
+		sourcelen = i;
 		in = 0;
 	}
 	NEXT();
@@ -28,11 +30,19 @@ word_code: /*: WORD ( word ) ;*/
 	ASMLABEL(word_code);
 	do {
 		size_t i = 0;
-		// TODO: Refactor
-		while (in < sourcelen && (source[in] == tos || (tos == ' ' && source[in] <= ' ')))
-			in++;
-		while (in < sourcelen && !(source[in] == tos || (tos == ' ' && source[in] <= ' ')))
-			pad[++i] = source[in++];
+		if (tos == ' ') {
+			// Treat space and control characters as delimiters
+			while (in < sourcelen && source[in] <= ' ')
+				in++;
+			while (in < sourcelen && source[in] > ' ')
+				pad[++i] = source[in++];
+		} else {
+			// Treat only character @ TOS as delimiter
+			while (in < sourcelen && source[in] == tos)
+				in++;
+			while (in < sourcelen && source[in] != tos)
+				pad[++i] = source[in++];
+		}
 		in++;
 		pad[0] = i;
 		tos = (cell_t)pad;
@@ -60,19 +70,16 @@ type_code: /*: TYPE ( type ) ;*/
 find_code: /*: FIND ( find ) ;*/
 	ASMLABEL(find_code);
 	do {
-		char *s = (char *)tos + 1;
-		int sl = ((char *)tos)[0];
+		char *name = (char *)tos + 1;
+		int len = ((char *)tos)[0];
 		struct fthdef *link = NULL;
-		for (int i = order - 1; i >= 0; i--) {
-			link = context[i];
-			while (link) {
-				char *n = link->name;
-				int nl = link->namelen;
-				if (!strncmp(s, n, sl < nl ? sl : nl))
+		for (int i = order - 1; i >= 0; i--)
+			for (link = context[i]; link; link = link->prev) {
+				if (link->namelen != len)
+					continue;
+				if (!strncmp(name, link->name, len))
 					goto found;
-				link = link->prev;
 			}
-		}
 		PUSH(sp) = tos;
 		tos = 0;
 		break;
@@ -123,5 +130,14 @@ to_number_code: /*: >NUMBER ( to_number ) ;*/
 		THEN
 	REPEAT
 	DROP
+;
+
+: QUIT ( quit )
+	BEGIN
+		REFILL
+	WHILE
+		INTERPRET
+	REPEAT
+	BYE
 ;
 */

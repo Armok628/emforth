@@ -41,21 +41,7 @@ void run_thread(void ***ip0)
 
 int main()
 {
-	#define XT(x) &x##_def.cf
-	#define IMM(x) (void **)(x)
-	#define CELLS * sizeof(cell_t)
-	#define LIT(x) XT(lit),IMM(x)
-	static void **test[] = {
-		XT(refill),
-		XT(zbranch),
-		IMM(4 CELLS),
-		XT(interpret),
-		XT(branch),
-		IMM(-5 CELLS),
-		XT(bye),
-	};
-
 	init_cfs();
-	run_thread(test);
+	run_thread(quit_def.data);
 	return 0;
 }
