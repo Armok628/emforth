@@ -109,6 +109,19 @@ to_number_code: /*: >NUMBER ( to_number ) ;*/
 	} while (0);
 	NEXT();
 
+dot_s_code: /*: .S ( dot_s ) ;*/
+	ASMLABEL(dot_s_code);
+	do {
+		int depth = ((cell_t)sp - (cell_t)sp0) / sizeof(cell_t);
+		printf("<%d>", depth);
+		for (int i = 1; i < depth; i++)
+			printf(" %ld", sp0[i]);
+		if (depth > 0)
+			printf(" %ld", tos);
+		putchar('\n');
+	} while (0);
+	NEXT();
+
 /*
 : COUNT ( count ) DUP C@ >R 1+ R> ;
 : /STRING ( shift_string ) TUCK - >R + R> ;
