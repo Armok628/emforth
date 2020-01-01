@@ -20,6 +20,6 @@ comma_code: /*: , ( comma ) ;*/
 c_comma_code: /*: C, ( c_comma ) ;*/
 	ASMLABEL(c_comma_code);
 	*(char *)dp = (char)tos;
-	dp = (cell_t *)((char *)dp+1);
+	dp = (cell_t *)((char *)dp + 1);
 	tos = POP(sp);
 	NEXT();
