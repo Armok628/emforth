@@ -142,6 +142,22 @@ VARIABLE STATE ( state )
 : [ ( lbracket ) FALSE STATE ! ; IMMEDIATE
 : ] ( rbracket ) TRUE STATE ! ;
 
+: ALIGNED ( aligned ) ( c-addr -- a-addr )
+	1- CELL 1- INVERT AND CELL+
+;
+
+: CMOVE ( cmove ) ( c-addr c-addr u -- )
+	BEGIN
+		DUP 0>
+	WHILE
+		>R
+		OVER C@ OVER C!
+		1+ >R 1+ R>
+		R> 1-
+	REPEAT
+	DROP 2DROP
+;
+
 : INTERPRET ( interpret )
 	BEGIN
 		BL WORD
