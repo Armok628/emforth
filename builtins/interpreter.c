@@ -69,7 +69,7 @@ find_code: /*: FIND ( find ) ;*/
 		struct fthdef *link = NULL;
 		for (int i = order - 1; i >= 0; i--)
 			for (link = context[i]; link; link = link->prev) {
-				if (link->namelen != len)
+				if ((link->namelen & ~MSB) != len)
 					continue;
 				if (!strncmp(name, link->name, len))
 					goto found;
@@ -109,6 +109,12 @@ to_number_code: /*: >NUMBER ( to_number ) ;*/
 	} while (0);
 	NEXT();
 
+dot_code: /*: . ( dot ) ;*/
+	ASMLABEL(dot_code);
+	printf("%ld ", tos);
+	tos = POP(sp);
+	NEXT();
+
 dot_s_code: /*: .S ( dot_s ) ;*/
 	ASMLABEL(dot_s_code);
 	do {
@@ -126,19 +132,29 @@ dot_s_code: /*: .S ( dot_s ) ;*/
 : COUNT ( count ) DUP C@ >R 1+ R> ;
 : /STRING ( shift_string ) TUCK - >R + R> ;
 
+VARIABLE STATE ( state )
+0 STATE !
+
+: COMPILE, ( compile_comma ) , ;
+
+: LITERAL ( literal ) LIT LIT , , ; IMMEDIATE
+
+: [ ( lbracket ) FALSE STATE ! ; IMMEDIATE
+: ] ( rbracket ) TRUE STATE ! ;
+
 : INTERPRET ( interpret )
 	BEGIN
 		BL WORD
 		DUP C@
 	WHILE
-		FIND ( DUP ) IF
-			\ 0> STATE @ 0= OR IF
+		FIND DUP IF
+			0> STATE @ 0= OR IF
 				EXECUTE
-			\ ELSE
-			\	COMPILE,
-			\ THEN
-		ELSE ( DROP ) NUMBER IF
-			\ STATE @ IF POSTPONE LITERAL THEN
+			ELSE
+				COMPILE,
+			THEN
+		ELSE DROP NUMBER IF
+			STATE @ IF POSTPONE LITERAL THEN
 		ELSE
 			COUNT TYPE
 			[CHAR] ? EMIT CR
