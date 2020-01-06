@@ -22,7 +22,7 @@ directive \;       {compile EXIT; set ::last $::state; set ::state ""}
 directive POSTPONE {compile [word]}
 directive LITERAL  {compile "DOLIT" [pop]}
 directive \[']     {compile "DOLIT" &[word]}
-directive \[CHAR]  {compile "DOLIT" "'[string index [word] 0]'"}
+directive \[CHAR]  {compile "DOLIT" [scan [string index [word] 0] %c]}
 directive IMMEDIATE {set ::flags($::last) "|MSB"}
 
 proc mark> {} {push [here]; compile "UNRESOLVED"}
@@ -39,6 +39,9 @@ directive WHILE  {compile "0BRANCH"; mark>; swap}
 directive REPEAT {compile  "BRANCH"; <resolve; >resolve}
 directive AGAIN  {compile  "BRANCH"; <resolve}
 directive UNTIL  {compile "0BRANCH"; <resolve}
+
+directive CONSTANT {set ::def([word]) [list "DOCON" [pop]]}
+directive VARIABLE {set ::def([word]) [list "DOVAR" 0]}
 
 directive ? {while {[word] ne ":"} continue} ;# Ignore C ternary operators
 directive ( {while {[word] ne ")"} continue}
@@ -101,6 +104,8 @@ while {[llength $words]} {
 			compile "DOLIT"
 		}
 		compile $word
+	} elseif {[info exists def($word)] && [lindex $def($word) 0] eq "DOVAR"} {
+		lset def($word) 1 [pop]
 	} elseif {[string is entier $word]} {
 		push $word
 	}
