@@ -49,8 +49,8 @@ directive ( {while {[word] ne ")"} continue}
 directive /*: {set ::state [word]}
 directive \;*/ {set ::state ""}
 
-proc cname {name} {
-	# Generate a reasonable C token from a given Forth name
+proc cid {name} {
+	# Generate a reasonable C identifier from a given Forth name
 	if {[string is entier $name]} {return $name}
 	if {$name eq "-"} {return "minus"}
 	set name [string tolower $name]
@@ -74,7 +74,7 @@ proc cname {name} {
 	return [string trim $name "_"]
 }
 
-proc xt {name} {expr {[string is entier $name] ? "(void **)$name" : "&[cname $name].cf"}}
+proc xt {name} {expr {[string is entier $name] ? "(void **)$name" : "&[cid $name].cf"}}
 proc flags {name} {expr {[info exists ::flags($name)] ? $::flags($name) : ""}}
 proc cf {name} {
 	set cf [lindex $::def($name) 0]
@@ -85,14 +85,8 @@ proc cf {name} {
 	}
 }
 
-foreach name $argv {
-	set id [open $name]
-	lappend words {*}[split [read $id]]
-	close $id
-}
-if {![info exists words]} {
-	set words [split [read stdin]]
-}
+foreach name $argv {lappend words {*}[split [read [open $name]]]}
+if {![info exists words]} {set words [split [read stdin]]}
 
 directive "" continue
 while {[llength $words]} {
@@ -111,16 +105,16 @@ while {[llength $words]} {
 	}
 }
 
-puts "static struct fthdef\n\t[join [lmap n [lsort [array names def]] {cname $n}] ",\n\t"];\n"
+puts "static struct fthdef\n\t[join [lmap n [lsort [array names def]] {cid $n}] ",\n\t"];\n"
 set ::prev "NULL"
 foreach name [lsort -decreasing [array names def]] {
 	set params [lassign $::def($name) cf]
-	puts "static struct fthdef [cname $name] = {
+	puts "static struct fthdef [cid $name] = {
 	.prev = $::prev,
 	.name = \"$name\",
 	.namelen = [string length $name][flags $name],
 	// .cf = [cf $name],
 	.data = {[join [lmap w $params {xt $w}] ", "]},
 }"
-	set ::prev "&[cname $name]"
+	set ::prev "&[cid $name]"
 }
