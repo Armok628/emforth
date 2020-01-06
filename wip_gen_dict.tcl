@@ -66,7 +66,7 @@ while {[llength $words]} {
 			compile "DOLIT"
 		}
 		compile $word
-	} elseif {[string is double $word]} {
+	} elseif {[string is entier $word]} {
 		push $word
 	}
 }
@@ -119,7 +119,7 @@ proc putlink {name} {
 	set ::prev "&${ctok}_def"
 }
 
-foreach name [lsort [array names def]] {
+foreach name [lsort -decreasing [array names def]] {
 	putlink $name
 }
 
