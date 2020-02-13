@@ -31,21 +31,23 @@ struct fthdef cn = { \
 
 // Used in the varargs of a VOCAB entry to compile code by hand.
 #define XT(cn) &cn##_d.cf
-#define LIT(n) XT(lit),(void **)(n)
+#define LIT(n) XT(dolit),(void **)(n)
 
 // VOCAB is an X-macro containing a list of Forth definitions.
 // Definition ID's are postfixed with "_d" to avoid collision.
 // Likewise, labels in the engine are postfixed with "_c".
 #define VOCAB(X) \
 	X(bye_d,NULL,"BYE",0,&&bye_c) \
-	X(lit_d,&bye_d,"LIT",0,&&lit_c) \
-	X(exit_d,&lit_d,"EXIT",0,&&exit_c) \
+\
+	X(docol_d,&bye_d,"DOCOL",0,&&docol_c) \
+\
+	X(exit_d,&docol_d,"EXIT",0,&&exit_c) \
 	X(execute_d,&exit_d,"EXECUTE",0,&&execute_c) \
 	X(branch_d,&execute_d,"BRANCH",0,&&branch_c) \
 	X(qbranch_d,&branch_d,"?BRANCH",0,&&qbranch_c) \
 \
-	X(docol_d,&qbranch_d,"DOCOL",0,&&docol_c) \
-	X(dup_d,&docol_d,"DUP",0,&&dup_c) \
+	X(dolit_d,&qbranch_d,"DOLIT",0,&&lit_c) \
+	X(dup_d,&dolit_d,"DUP",0,&&dup_c) \
 	X(drop_d,&dup_d,"DROP",0,&&drop_c) \
 	X(swap_d,&drop_d,"SWAP",0,&&swap_c) \
 	X(over_d,&swap_d,"OVER",0,&&over_c) \

@@ -17,16 +17,20 @@ cell *engine(FTHREGS)
 	}
 	NEXT();
 
-	// Control flow
+	// System interface
 bye_c:
 	asm("bye:");
 	*sp = tos;
 	return sp;
+
+	// Inner interpreters
 docol_c:
 	asm("docol:");
 	PUSH(rp) = (cell)ip;
 	ip = (void ***)&wp[1];
 	NEXT();
+
+	// Control flow
 exit_c:
 	asm("exit:");
 	ip = (void ***)POP(rp);
@@ -93,7 +97,7 @@ cfetch_c:
 	tos = *(char *)tos;
 	NEXT();
 
-	// Numerical operations
+	// Arithmetic/Logic
 add_c:
 	asm("add:");
 	tos += POP(sp);
