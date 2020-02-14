@@ -11,5 +11,5 @@ engine.c: $(SRCS)
 .PHONY: clean cleanest
 clean:
 	rm -f a.out engine.c
-cleanest:
+cleanest: clean
 	rm -f .*~ *~ */.*~ */*~

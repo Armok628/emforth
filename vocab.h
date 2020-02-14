@@ -40,16 +40,16 @@ struct fthdef cn = { \
 	X(bye_d,NULL,"BYE",0,&&bye_c) \
 \
 	X(docol_d,&bye_d,"DOCOL",0,&&docol_c) \
+	X(dolit_d,&docol_d,"DOLIT",0,&&dolit_c) \
 \
-	X(exit_d,&docol_d,"EXIT",0,&&exit_c) \
+	X(exit_d,&dolit_d,"EXIT",0,&&exit_c) \
 	X(execute_d,&exit_d,"EXECUTE",0,&&execute_c) \
 	X(branch_d,&execute_d,"BRANCH",0,&&branch_c) \
 	X(qbranch_d,&branch_d,"?BRANCH",0,&&qbranch_c) \
 \
 	X(spfetch_d,&qbranch_d,"SP@",0,&&spfetch_c) \
 	X(spstore_d,&spfetch_d,"SP!",0,&&spstore_c) \
-	X(dolit_d,&spstore_d,"DOLIT",0,&&dolit_c) \
-	X(dup_d,&dolit_d,"DUP",0,&&dup_c) \
+	X(dup_d,&spstore_d,"DUP",0,&&dup_c) \
 	X(drop_d,&dup_d,"DROP",0,&&drop_c) \
 	X(swap_d,&drop_d,"SWAP",0,&&swap_c) \
 	X(over_d,&swap_d,"OVER",0,&&over_c) \
@@ -66,15 +66,13 @@ struct fthdef cn = { \
 	X(cfetch_d,&cstore_d,"C@",0,&&cfetch_c) \
 \
 	X(add_d,&cfetch_d,"+",0,&&add_c) \
-	X(and_d,&add_d,"AND",0,&&and_c) \
+	X(sub_d,&add_d,"-",0,&&sub_c) \
+	X(and_d,&sub_d,"AND",0,&&and_c) \
 	X(or_d,&and_d,"OR",0,&&or_c) \
 	X(xor_d,&or_d,"XOR",0,&&xor_c) \
 	X(zlt_d,&xor_d,"0<",0,&&zlt_c) \
-\
-	X(cell_d,&zlt_d,"CELL",0,&&docol_c, \
-		LIT(sizeof(cell)),XT(exit) \
-	) \
+
 // LAST_VOC is needed for the engine to know where to start filling in code fields
-#define LAST_VOC &cell_d
+#define LAST_VOC &zlt_d
 
 #endif

@@ -1,13 +1,19 @@
 #define OP2(name,op) \
-name##_c: \
 	asm(#name":"); \
 	tos = POP(sp) op tos; \
 	NEXT();
-OP2(add,+)
-OP2(and,&)
-OP2(or,|)
-OP2(xor,^)
-zlt_c:
+
+add_c: // +
+	OP2(add,+)
+sub_c: // -
+	OP2(sub,-)
+and_c: // AND
+	OP2(and,&)
+or_c: // OR
+	OP2(or,|)
+xor_c: // XOR
+	OP2(xor,^)
+zlt_c: // 0<
 	asm("zlt:");
 	tos = (tos < 0) ? ~0 : 0;
 	NEXT();
