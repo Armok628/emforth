@@ -53,9 +53,19 @@ qbranch_c:
 	ip++;
 	NEXT();
 
-	// Stack manipulation
-lit_c:
-	asm("lit:");
+	// Data stack
+spfetch_c:
+	asm("spfetch:");
+	PUSH(sp) = tos;
+	tos = (cell)sp;
+	NEXT();
+spstore_c:
+	asm("spstore:");
+	sp = (cell *)tos;
+	tos = POP(sp);
+	NEXT();
+dolit_c:
+	asm("dolit:");
 	PUSH(sp) = tos;
 	tos = *(cell *)ip++;
 	NEXT();
@@ -75,6 +85,33 @@ over_c:
 	asm("over:");
 	PUSH(sp) = tos;
 	tos = sp[-2];
+	NEXT();
+
+	// Return stack
+rpfetch_c:
+	asm("rpfetch:");
+	PUSH(sp) = tos;
+	tos = (cell)rp;
+	NEXT();
+rpstore_c:
+	asm("rpstore:");
+	rp = (cell *)tos;
+	tos = POP(sp);
+	NEXT();
+to_r_c:
+	asm("to_r:");
+	PUSH(rp) = tos;
+	tos = POP(sp);
+	NEXT();
+r_fetch_c:
+	asm("r_fetch:");
+	PUSH(sp) = tos;
+	tos = rp[-1];
+	NEXT();
+r_from_c:
+	asm("r_from:");
+	PUSH(sp) = tos;
+	tos = POP(rp);
 	NEXT();
 
 	// Memory access
@@ -98,10 +135,15 @@ cfetch_c:
 	NEXT();
 
 	// Arithmetic/Logic
-add_c:
-	asm("add:");
-	tos += POP(sp);
+#define OP2(name,op) \
+name##_c: \
+	asm(#name":"); \
+	tos = POP(sp) op tos; \
 	NEXT();
+OP2(add,+)
+OP2(and,&)
+OP2(or,|)
+OP2(xor,^)
 zlt_c:
 	asm("zlt:");
 	tos = (tos < 0) ? ~0 : 0;

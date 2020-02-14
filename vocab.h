@@ -46,19 +46,30 @@ struct fthdef cn = { \
 	X(branch_d,&execute_d,"BRANCH",0,&&branch_c) \
 	X(qbranch_d,&branch_d,"?BRANCH",0,&&qbranch_c) \
 \
-	X(dolit_d,&qbranch_d,"DOLIT",0,&&lit_c) \
+	X(spfetch_d,&qbranch_d,"SP@",0,&&spfetch_c) \
+	X(spstore_d,&spfetch_d,"SP!",0,&&spstore_c) \
+	X(dolit_d,&spstore_d,"DOLIT",0,&&dolit_c) \
 	X(dup_d,&dolit_d,"DUP",0,&&dup_c) \
 	X(drop_d,&dup_d,"DROP",0,&&drop_c) \
 	X(swap_d,&drop_d,"SWAP",0,&&swap_c) \
 	X(over_d,&swap_d,"OVER",0,&&over_c) \
 \
-	X(store_d,&over_d,"!",0,&&store_c) \
-	X(fetch_d,&store_d,"@",0,&&fetch_c) \
-	X(cstore_c,&fetch_d,"C!",0,&&cstore_c) \
-	X(cfetch_c,&cstore_c,"C@",0,&&cfetch_c) \
+	X(rpfetch_d,&over_d,"RP@",0,&&rpfetch_c) \
+	X(rpstore_d,&rpfetch_d,"RP!",0,&&rpstore_c) \
+	X(to_r_d,&rpstore_d,">R",0,&&to_r_c) \
+	X(r_fetch_d,&to_r_d,"R@",0,&&r_fetch_c) \
+	X(r_from_d,&r_fetch_d,"R>",0,&&r_from_c) \
 \
-	X(add_d,&cfetch_c,"+",0,&&add_c) \
-	X(zlt_d,&add_d,"0<",0,&&zlt_c) \
+	X(store_d,&r_from_d,"!",0,&&store_c) \
+	X(fetch_d,&store_d,"@",0,&&fetch_c) \
+	X(cstore_d,&fetch_d,"C!",0,&&cstore_c) \
+	X(cfetch_d,&cstore_d,"C@",0,&&cfetch_c) \
+\
+	X(add_d,&cfetch_d,"+",0,&&add_c) \
+	X(and_d,&add_d,"AND",0,&&and_c) \
+	X(or_d,&and_d,"OR",0,&&or_c) \
+	X(xor_d,&or_d,"XOR",0,&&xor_c) \
+	X(zlt_d,&xor_d,"0<",0,&&zlt_c) \
 \
 	X(cell_d,&zlt_d,"CELL",0,&&docol_c, \
 		LIT(sizeof(cell)),XT(exit) \
