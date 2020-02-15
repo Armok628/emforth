@@ -1,0 +1,13 @@
+#!/usr/bin/awk -f
+BEGIN {
+	last="NULL"
+	print "#define VOCAB(X) \\"
+}
+/_c:/ {
+	cur=substr($1,0,length($1)-2)
+	print "X("cur"_d,"last",\""$3"\",&&"cur"_c)\\"
+	last="&"cur"_d"
+}
+END {
+	print "\n#define LAST_VOC "last
+}
