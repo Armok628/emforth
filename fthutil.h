@@ -26,6 +26,7 @@ typedef int16_t cell;
 typedef uint16_t ucell;
 #endif
 
+// Dictionary link structure
 struct fthdef {
 	struct fthdef *prev;
 	char *name;
@@ -35,6 +36,7 @@ struct fthdef {
 	void **data[];
 };
 
+// Common static array length macro
 #define COUNT(a) (sizeof(a)/sizeof(a[0]))
 
 #ifdef NO_ASM

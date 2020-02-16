@@ -1,4 +1,5 @@
 #include "fthutil.h"
+#include "sysif/sysif.h"
 
 #include "vocab.h"
 VOCAB(DEF)
@@ -30,10 +31,10 @@ int main(int argc, char *argv[])
 	init_cfs();
 
 	static void **test[] = {
-		XT(spfetch),
-		XT(spfetch),
-		XT(swap),
-		XT(sub),
+		XT(xio),
+		XT(keyq),
+		XT(qbranch),
+		(void **)(-2*sizeof(cell)),
 		XT(bye)
 	};
 	cell sp[16], rp[16];
