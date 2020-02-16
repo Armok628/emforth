@@ -18,8 +18,10 @@ vocab.h: genvoc $(SRCS)
 engine.c: $(SRCS)
 	find $(SRCS) | sed 's/.*/#include "&"/' > $@
 
-.PHONY: clean cleanest
+.PHONY: clean cleaner cleanest
 clean:
-	rm -f a.out *.o engine.c vocab.h
-cleanest: clean
+	rm -f a.out *.o
+cleaner: clean
+	rm -f engine.c vocab.h
+cleanest: cleaner
 	rm -f .*~ *~ */.*~ */*~

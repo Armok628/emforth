@@ -5,10 +5,12 @@ bye_c: // BYE
 	return sp;
 
 xio_c: // !IO
+	asm("xio:");
 	manage_io(IO_INIT);
 	NEXT();
 
 keyq_c: // KEY?
+	asm("keyq:");
 	PUSH(sp) = tos;
 	tos = rx_char();
 	if (tos < 0) {
@@ -20,6 +22,7 @@ keyq_c: // KEY?
 	NEXT();
 
 emit_c: // EMIT
+	asm("emit:");
 	tx_char(tos);
 	tos = POP(sp);
 	NEXT();

@@ -16,6 +16,6 @@ int rx_char(void);
 //     otherwise returns key value
 
 void tx_char(int);
-// ^ transmits character to output
+// ^ transmits character to output device
 
 #endif
