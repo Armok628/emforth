@@ -28,10 +28,14 @@ void manage_io(enum io_state s)
 
 int rx_char(void)
 {
-	return getchar();
+	char c;
+	if (read(STDIN_FILENO, &c, 1) > 0)
+		return c;
+	else
+		return -1;
 }
 
 void tx_char(int c)
 {
-	putchar(c);
+	write(STDIN_FILENO, &c, 1);
 }

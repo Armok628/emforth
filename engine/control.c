@@ -11,7 +11,7 @@ execute_c: // EXECUTE
 
 branch_c: // BRANCH
 	asm("branch:");
-	ip += *(cell *)ip;
+	ip = (void ***)((cell)ip + *(cell *)ip);
 	NEXT();
 
 qbranch_c: // ?BRANCH

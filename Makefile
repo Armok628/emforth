@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Os -g
+CFLAGS = -Os -g -Wall
 SRCS = engine/*.c
 SYS = sysif/linux.c
 

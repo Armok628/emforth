@@ -39,6 +39,5 @@ int main(int argc, char *argv[])
 	};
 	cell sp[16], rp[16];
 
-
 	return *engine(test,sp,rp,0,0,0);
 }
