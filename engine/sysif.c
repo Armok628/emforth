@@ -4,11 +4,6 @@ bye_c: // BYE
 	manage_io(IO_RESET);
 	return sp;
 
-xio_c: // !IO
-	asm("xio:");
-	manage_io(IO_INIT);
-	NEXT();
-
 keyq_c: // KEY?
 	asm("keyq:");
 	PUSH(sp) = tos;

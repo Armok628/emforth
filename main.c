@@ -9,6 +9,7 @@ cell *engine(FTHREGS)
 	static void **cfs[] = {VOCAB(CF)};
 
 	if (ip == NULL) {
+		// If IP is NULL, initialize primitive code fields
 		struct fthdef *d = LAST_VOC;
 		for (int i = COUNT(cfs)-1; i >= 0; i--) {
 			d->cf = cfs[i];
@@ -16,6 +17,8 @@ cell *engine(FTHREGS)
 		}
 		return NULL;
 	}
+	// Initialize I/O and jump to IP
+	manage_io(IO_INIT);
 	NEXT();
 
 	#include "engine.c"
@@ -31,7 +34,6 @@ int main(int argc, char *argv[])
 	init_cfs();
 
 	static void **test[] = {
-		XT(xio),
 		XT(keyq),
 		XT(qbranch),
 		(void **)(-2*sizeof(cell)),
