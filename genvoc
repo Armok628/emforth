@@ -1,13 +1,14 @@
-#!/usr/bin/awk -f
+#!/usr/bin/perl -nl
 BEGIN {
-	last="NULL"
-	print "#define VOCAB(X) \\"
+	print "#define VOCAB(X) \\";
+	$l="NULL";
 }
-/_c:/ {
-	cur=substr($1,0,length($1)-2)
-	print "X("cur"_d,"last",\""$3"\",&&"cur"_c)\\"
-	last="&"cur"_d"
+
+if (/^(.*)_c: \/\/ (.*)$/) {
+	print qq{X($1_d,$l,"$2",&&$1_c)\\};
+	$l="&$1_d";
 }
+
 END {
-	print "\n#define LAST_VOC "last
+	print "\n#define LAST_VOC $l";
 }
