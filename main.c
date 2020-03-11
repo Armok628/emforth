@@ -24,10 +24,7 @@ cell *engine(FTHREGS)
 	#include "engine.c"
 }
 
-void init_cfs(void)
-{
-	engine(0, 0, 0, 0, 0, 0);
-}
+#define init_cfs() engine(0, 0, 0, 0, 0, 0)
 
 int main(int argc, char *argv[])
 {

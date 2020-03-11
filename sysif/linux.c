@@ -37,5 +37,5 @@ int rx_char(void)
 
 void tx_char(int c)
 {
-	write(STDIN_FILENO, &c, 1);
+	write(STDOUT_FILENO, &c, 1);
 }
