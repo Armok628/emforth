@@ -3,11 +3,17 @@
 	tos = POP(sp) op tos; \
 	NEXT();
 
-add_c: // +
-	OP2(add,+)
+// Zero extend cell to double cell
+#define ZXC(x) ((dcell)(ucell)x)
 
-sub_c: // -
-	OP2(sub,-)
+m_add_c: // M+
+	asm("m_add_c:");
+{
+	register dcell d = ZXC(tos) + ZXC(sp[-1]);
+	sp[-1] = (ucell)d;
+	tos = d >> 8*sizeof(cell);
+}
+	NEXT();
 
 and_c: // AND
 	OP2(and,&)

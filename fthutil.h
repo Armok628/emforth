@@ -40,9 +40,9 @@ struct fthdef {
 #define COUNT(a) (sizeof(a)/sizeof(a[0]))
 
 #ifdef NO_ASM
-// NO_ASM causes an empty macro asm to be defined.
-// This removes all asm uses, including for labels.
 #define asm(...)
+#else
+#define asm(...) __asm(__VA_ARGS__)
 #endif
 
 // FTHREGS lists the Forth registers for use as arguments.
