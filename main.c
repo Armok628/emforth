@@ -31,9 +31,7 @@ int main(int argc, char *argv[])
 	init_cfs();
 
 	static void **test[] = {
-		XT(keyq),
-		XT(qbranch),
-		(void **)(-2*sizeof(cell)),
+		XT(key),
 		XT(bye)
 	};
 	cell sp[16], rp[16];

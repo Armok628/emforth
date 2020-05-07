@@ -1,5 +1,6 @@
 #ifndef SYSIF_H
 #define SYSIF_H
+#include <stdbool.h>
 
 enum io_state {
 	IO_INIT,
@@ -10,12 +11,13 @@ void manage_io(enum io_state);
 // ^ initializes/resets I/O devices
 //   depending on argument
 
-int rx_char(void);
-// ^ polls input device for a character
-//     returns <0 if no key ready
-//     otherwise returns key value
+bool poll_rx(void);
+// ^ polls input device, returns true if data ready
 
-void tx_char(int);
-// ^ transmits character to output device
+char rx_char(void);
+// ^ blocks, reads one byte from input device
+
+void tx_char(char);
+// ^ transmits one to the output device
 
 #endif

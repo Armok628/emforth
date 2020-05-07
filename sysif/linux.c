@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
-#include <stdbool.h>
+#include <sys/select.h>
+#include <sys/time.h>
 
 void manage_io(enum io_state s)
 {
@@ -10,10 +11,8 @@ void manage_io(enum io_state s)
 	static struct termios old, new;
 	if (!init) {
 		tcgetattr(STDIN_FILENO, &old);
-		new = old;
-		new.c_lflag &= ~(ICANON|ECHO);
-		new.c_cc[VMIN] = 0;
-		new.c_cc[VTIME] = 0;
+		tcgetattr(STDIN_FILENO, &new);
+		cfmakeraw(&new);
 		init = true;
 	}
 	switch (s) {
@@ -26,16 +25,26 @@ void manage_io(enum io_state s)
 	}
 }
 
-int rx_char(void)
+bool poll_rx(void)
 {
-	char c;
-	if (read(STDIN_FILENO, &c, 1) > 0)
-		return c;
-	else
-		return -1;
+	fd_set set;
+	struct timeval tv;
+
+	FD_ZERO(&set);
+	FD_SET(STDIN_FILENO, &set);
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	return select(STDIN_FILENO + 1, &set, NULL, NULL, &tv);
 }
 
-void tx_char(int c)
+char rx_char(void)
 {
-	write(STDOUT_FILENO, &c, 1);
+	return getchar();
+}
+
+void tx_char(char c)
+{
+	putchar(c);
 }

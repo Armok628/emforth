@@ -4,16 +4,16 @@ bye_c: // BYE
 	manage_io(IO_RESET);
 	return sp;
 
-keyq_c: // KEY?
-	asm("keyq:");
+key_c: // KEY
+	asm("key:");
 	PUSH(sp) = tos;
 	tos = rx_char();
-	if (tos < 0) {
-		tos = 0;
-	} else {
-		PUSH(sp) = tos;
-		tos = ~0;
-	}
+	NEXT();
+
+poll_c: // POLL
+	asm("poll:");
+	PUSH(sp) = tos;
+	tos = poll_rx() ? ~0 : 0;
 	NEXT();
 
 emit_c: // EMIT
