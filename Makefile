@@ -1,7 +1,12 @@
 CC = clang
 CFLAGS = -Os -g -Wall
+
 SRCS = engine/*.c
 SYS = sysif/linux.c
+
+ALL = a.out engine.c vocab.h
+
+all: $(ALL)
 
 a.out: main.o sysif.o
 	$(CC) $^ -o $@
@@ -18,10 +23,6 @@ vocab.h: genvoc $(SRCS)
 engine.c: $(SRCS)
 	find $(SRCS) | sed 's/.*/#include "&"/' > $@
 
-.PHONY: clean cleaner cleanest
+.PHONY: clean
 clean:
-	rm -f a.out *.o
-cleaner: clean
-	rm -f engine.c vocab.h
-cleanest: cleaner
-	rm -f .*~ *~ */.*~ */*~
+	rm -f $(ALL) *.o

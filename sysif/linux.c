@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
-#include <sys/select.h>
-#include <sys/time.h>
+#include <poll.h>
 
 void manage_io(enum io_state s)
 {
@@ -27,16 +26,11 @@ void manage_io(enum io_state s)
 
 bool poll_rx(void)
 {
-	fd_set set;
-	struct timeval tv;
-
-	FD_ZERO(&set);
-	FD_SET(STDIN_FILENO, &set);
-
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-
-	return select(STDIN_FILENO + 1, &set, NULL, NULL, &tv);
+	static struct pollfd in = {
+		.fd = STDIN_FILENO,
+		.events = POLLIN,
+	};
+	return poll(&in, 1, 1) > 0;
 }
 
 char rx_char(void)
