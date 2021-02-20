@@ -1,14 +1,14 @@
 #!/usr/bin/perl -nl
 BEGIN {
 	print "#define VOCAB(X) \\";
-	$l="NULL";
+	$p="NULL";
 }
 
-if (/^(.*)_c: \/\/ (.*)$/) {
-	print qq{X($1_d,$l,"$2",&&$1_c)\\};
-	$l="&$1_d";
+if (/^(.*)_c: \/\/ (.*)$/) {			# label_c: // LABEL
+	print qq{X($1_d,$p,"$2",&&$1_c)\\};	# X(label_d, <prev>, "LABEL", &&label_c_d)
+	$p="&$1_d";
 }
 
 END {
-	print "\n#define LAST_VOC $l";
+	print "\n#define LAST_VOC $p";
 }

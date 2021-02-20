@@ -85,7 +85,7 @@ struct fthdef cn = { \
 	.prev = pr, \
 	.name = nm, \
 	.imm = 0, \
-	.len = COUNT(nm), \
+	.len = COUNT(nm)-1, \
 	/*.cf = cf,*/ \
 	.data = {__VA_ARGS__}, \
 };

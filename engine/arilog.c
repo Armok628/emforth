@@ -5,13 +5,14 @@
 
 // Zero extend cell to double cell
 #define ZXC(x) ((dcell)(ucell)x)
+#define CELL_BITS (8*sizeof(cell))
 
 m_add_c: // M+
-	asm("m_add_c:");
+	asm("m_add:");
 {
 	register dcell d = ZXC(tos) + ZXC(sp[-1]);
 	sp[-1] = (ucell)d;
-	tos = d >> 8*sizeof(cell);
+	tos = d >> CELL_BITS;
 }
 	NEXT();
 
@@ -28,3 +29,13 @@ zlt_c: // 0<
 	asm("zlt:");
 	tos = (tos < 0) ? ~0 : 0;
 	NEXT();
+
+um_divmod_c: // UM/MOD
+	asm("um_divmod:");
+{
+	register dcell d = ZXC(tos) << CELL_BITS | ZXC(sp[-1]);
+	sp[-1] = d % ZXC(tos);
+	tos = d / ZXC(tos);
+}
+	NEXT();
+

@@ -30,11 +30,14 @@ int main(int argc, char *argv[])
 {
 	init_cfs();
 
-	static void **test[] = {
-		XT(key),
+	static void **ip[] = {
+		XT(word),
+		XT(cr),
+		XT(type),
+		XT(cr),
 		XT(bye)
 	};
-	cell sp[16], rp[16];
+	cell sp[64], rp[64], dp[1024];
 
-	return *engine(test,sp,rp,0,0,0);
+	return *engine(ip,sp,rp,dp,0,0);
 }
